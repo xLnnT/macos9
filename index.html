@@ -1,0 +1,3858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>Mac OS 9</title>
+<style>
+  @font-face {
+    font-family: 'Charcoal';
+    src: url('CHARCOAL.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'New Geneva Nine ICG';
+    src: url('New%20Geneva%20Nine%20ICG%20Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #262626;
+    --white: #ffffff;
+    --gray-100: #eeeeee;
+    --gray-300: #dddddd;
+    --gray-400: #cccccc;
+    --gray-600: #999999;
+    --gray-700: #808080;
+    --wallpaper: #cc99cc;
+    --font-system: 'New Geneva Nine ICG', 'Geneva', 'Verdana', 'Helvetica', sans-serif;
+    --font-chicago: 'Charcoal', 'Chicago', 'Geneva', 'Verdana', sans-serif;
+    /* Custom Mac OS 9 Cursors */
+    --cursor-arrow: url('cursor-arrow-32.png') 0 0, default;
+    --cursor-pointer: url('cursor-hand-32.png') 9 1, pointer;
+    --cursor-text: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='18' viewBox='0 0 8 18'%3E%3Cpath d='M0 1H3V0H5V1H8V3H5V4H4V14H5V15H8V17H5V18H3V17H0V15H3V14H4V4H3V3H0Z' fill='black'/%3E%3C/svg%3E") 4 9, text;
+    --cursor-grab: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18'%3E%3Cpath d='M4 1H6V0H8V1H10V0H12V2H14V4H16V6H18V10H17V12H16V14H14V16H12V17H10V18H6V17H4V16H2V14H1V12H0V8H2V6H4Z' fill='white'/%3E%3Cpath d='M5 0V2H3V4H1V7H0V9H1V11H2V13H3V15H5V16H7V17H11V16H13V15H15V13H16V11H17V9H18V6H17V4H15V2H13V1H11V0H9V1H7V0ZM5 2H7V4H5ZM9 2H11V4H9ZM13 4H15V6H13ZM3 6H5V8H3ZM5 8H7V6H9V8H11V6H13V8H15V10H13V12H11V14H9V15H7V14H5V12H3V10H5Z' fill='black'/%3E%3C/svg%3E") 8 8, grab;
+    --cursor-wait: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='white' stroke='black' stroke-width='2'/%3E%3Cpath d='M8 8V3' stroke='black' stroke-width='2'/%3E%3Cpath d='M8 8L12 8' stroke='black' stroke-width='2'/%3E%3C/svg%3E") 8 8, wait;
+  }
+
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: var(--font-system);
+    font-size: 12px;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: var(--cursor-arrow);
+  }
+
+  /* Cursor overrides for interactive elements */
+  .title-bar { cursor: var(--cursor-grab); }
+  .dropdown-item:not(.disabled) { cursor: var(--cursor-arrow); }
+  .window-btn { cursor: var(--cursor-arrow); }
+  .finder-back-btn:not(.disabled) { cursor: var(--cursor-arrow); }
+  .browser-content a,
+  .browser-content button,
+  .retro-like-btn,
+  .retro-follow-btn { cursor: var(--cursor-pointer); }
+  .browser-content input[type="text"],
+  .browser-content textarea,
+  #url-bar { cursor: var(--cursor-text); }
+  .loading-dialog * { cursor: var(--cursor-wait); }
+  body.is-loading { cursor: var(--cursor-wait) !important; }
+
+  /* ==================== WALLPAPER ==================== */
+  #desktop {
+    width: 100%;
+    height: 100%;
+    background-color: var(--wallpaper);
+    background-image: url('Wallpaper%20pink.png');
+    background-size: 1920px 1440px;
+    background-repeat: repeat;
+    animation: wallpaper-scroll 20s linear infinite;
+    position: relative;
+  }
+
+  @keyframes wallpaper-scroll {
+    from { background-position: 0 0; }
+    to { background-position: 0 1440px; }
+  }
+
+  /* ==================== MENU BAR ==================== */
+  #menubar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: var(--gray-300);
+    border-bottom: 1px solid var(--gray-600);
+    display: flex;
+    align-items: center;
+    z-index: 10000;
+    box-shadow: 0 1px 0 var(--black);
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  #menubar .apple-logo {
+    width: 22px;
+    height: 20px;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: var(--cursor-arrow);
+    padding: 0 4px;
+    position: relative;
+  }
+
+  #menubar .apple-logo.active {
+    background: var(--black);
+  }
+
+  #menubar .apple-logo img {
+    width: 14px;
+    height: 16px;
+  }
+
+  .menu-item {
+    padding: 2px 10px;
+    font-family: var(--font-chicago);
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--black);
+    letter-spacing: 0.3px;
+    cursor: var(--cursor-arrow);
+    height: 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .menu-item.active,
+  .menu-item:hover {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  /* ==================== DROPDOWN MENUS ==================== */
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 20px;
+    left: 0;
+    background: var(--gray-300);
+    border: 1px solid var(--black);
+    box-shadow: 1px 1px 0 var(--black),
+      inset 2px 2px 0 var(--white),
+      inset -2px -2px 0 var(--gray-700);
+    padding: 2px;
+    z-index: 10001;
+    min-width: 180px;
+    font-family: var(--font-chicago);
+    font-size: 12px;
+    font-weight: normal;
+  }
+
+  .dropdown-menu.visible {
+    display: block;
+  }
+
+  .dropdown-item {
+    height: 18px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px 0 14px;
+    white-space: nowrap;
+    color: var(--black);
+    cursor: var(--cursor-arrow);
+    position: relative;
+  }
+
+  .dropdown-item:hover {
+    background: #339;
+    color: var(--white);
+  }
+
+  .dropdown-item.disabled {
+    color: var(--gray-700);
+  }
+
+  .dropdown-item.disabled:hover {
+    background: transparent;
+    color: var(--gray-700);
+  }
+
+  .dropdown-item .shortcut {
+    margin-left: auto;
+    padding-left: 24px;
+    font-family: var(--font-chicago);
+    font-size: 11px;
+  }
+
+  .dropdown-item .submenu-arrow {
+    margin-left: auto;
+    padding-left: 12px;
+    font-size: 8px;
+  }
+
+  .dropdown-separator {
+    height: 2px;
+    margin: 0 -2px;
+    position: relative;
+  }
+
+  .dropdown-separator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--gray-600);
+  }
+
+  .dropdown-separator::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--white);
+  }
+
+  /* ==================== FINDER BACK BUTTON ==================== */
+  .finder-nav-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--gray-300);
+    border-bottom: 1px solid var(--gray-600);
+    margin: 0 4px;
+  }
+
+  .finder-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 8px 1px 4px;
+    font-family: var(--font-chicago);
+    font-size: 11px;
+    color: var(--black);
+    background: var(--gray-300);
+    border: 1px solid var(--gray-600);
+    box-shadow:
+      inset 1px 1px 0 var(--white),
+      inset -1px -1px 0 var(--gray-700);
+    cursor: var(--cursor-arrow);
+    height: 18px;
+  }
+
+  .finder-back-btn:active {
+    box-shadow:
+      inset -1px -1px 0 var(--white),
+      inset 1px 1px 0 var(--gray-700);
+  }
+
+  .finder-back-btn.disabled {
+    color: var(--gray-600);
+    pointer-events: none;
+  }
+
+  .finder-back-btn .back-arrow {
+    font-size: 10px;
+  }
+
+  .menu-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .menu-right .menu-item {
+    font-weight: normal;
+  }
+
+  #menu-clock {
+    font-family: var(--font-system);
+    font-size: 12px;
+    color: var(--black);
+    padding: 0 10px;
+    font-weight: normal;
+  }
+
+  .menu-separator {
+    width: 1px;
+    height: 14px;
+    background: var(--gray-600);
+    margin: 0 4px;
+  }
+
+  .finder-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+  }
+
+  .finder-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ==================== DESKTOP ICONS ==================== */
+  .desktop-icon {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    cursor: var(--cursor-arrow);
+    padding: 4px;
+  }
+
+  .desktop-icon .icon-img {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+    image-rendering: pixelated;
+    position: relative;
+  }
+
+  .desktop-icon .icon-img::after,
+  .folder-icon .icon-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background-image: repeating-conic-gradient(#000 0% 25%, transparent 0% 50%);
+    background-size: 2px 2px;
+    mix-blend-mode: multiply;
+  }
+
+  .desktop-icon.selected .icon-img::after,
+  .folder-icon.selected .icon-img::after {
+    opacity: 1;
+  }
+
+  .desktop-icon .icon-label,
+  .folder-icon .icon-label {
+    font-family: var(--font-system);
+    font-size: 10px;
+    text-align: center;
+    line-height: 1.2;
+    word-wrap: break-word;
+    max-width: 80px;
+  }
+
+  .desktop-icon .icon-label {
+    color: var(--white);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+  }
+
+  .folder-icon .icon-label {
+    color: var(--black);
+  }
+
+  .desktop-icon.selected .icon-label,
+  .folder-icon.selected .icon-label {
+    background: #3366cc;
+    color: white;
+    text-shadow: none;
+    padding: 0 2px;
+  }
+
+  /* ==================== FINDER WINDOW ==================== */
+  .window {
+    position: absolute;
+    background: var(--gray-400);
+    border: 1px solid var(--black);
+    box-shadow:
+      inset 2px 2px 0 rgba(255,255,255,0.5),
+      inset -2px -2px 0 rgba(38,38,38,0.4),
+      2px 2px 8px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    min-height: 200px;
+  }
+
+  .window.hidden {
+    display: none;
+  }
+
+  /* Title bar */
+  .title-bar {
+    height: 19px;
+    background: var(--gray-400);
+    display: flex;
+    align-items: center;
+    padding: 0 3px;
+    cursor: grab;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .title-bar:active {
+    cursor: grabbing;
+  }
+
+  .title-bar-stripes {
+    flex: 1;
+    height: 13px;
+    position: relative;
+    overflow: hidden;
+    margin: 0 4px;
+  }
+
+  .title-bar-stripes::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gray-300);
+    border-left: 1px solid var(--gray-100);
+    border-right: 1px solid #c5c5c5;
+  }
+
+  .title-bar-stripes::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 0;
+    right: 0;
+    bottom: 1px;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 1px,
+      var(--gray-600) 1px,
+      var(--gray-600) 2px
+    );
+  }
+
+  .title-bar-center {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    position: relative;
+    z-index: 1;
+    background: var(--gray-300);
+    height: 13px;
+    flex-shrink: 0;
+  }
+
+  .title-bar-center .hd-icon {
+    width: 13px;
+    height: 8px;
+    display: flex;
+    align-items: center;
+  }
+
+  .title-bar-center .hd-icon svg {
+    width: 13px;
+    height: 8px;
+  }
+
+  .title-bar-center span {
+    font-family: var(--font-chicago);
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--black);
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+  }
+
+  .window-btn {
+    width: 13px;
+    height: 13px;
+    border: 1px solid var(--black);
+    background: var(--white);
+    flex-shrink: 0;
+    position: relative;
+    cursor: var(--cursor-arrow);
+  }
+
+  .window-btn:active {
+    background: var(--black);
+  }
+
+  .close-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 7px;
+    height: 1px;
+    background: transparent;
+    transform: translate(-50%, -50%);
+  }
+
+  .close-btn:hover::after {
+    background: var(--black);
+  }
+
+  .zoom-btn {
+    position: relative;
+  }
+
+  .zoom-btn::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 9px;
+    height: 9px;
+    border: 1px solid var(--black);
+  }
+
+  .collapse-btn::before {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    height: 1px;
+    background: var(--black);
+  }
+
+  .collapse-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 1px;
+    left: 2px;
+    right: 2px;
+    height: 1px;
+    background: var(--black);
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 20px;
+    background: var(--gray-300);
+    border: 1px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4px;
+    box-shadow:
+      inset 2px 2px 0 var(--white),
+      inset -2px -2px 0 rgba(38,38,38,0.4);
+    flex-shrink: 0;
+  }
+
+  .status-bar span {
+    font-family: var(--font-system);
+    font-size: 10px;
+    color: var(--black);
+  }
+
+  /* Window content area */
+  .window-content {
+    flex: 1;
+    display: flex;
+    margin: 0 4px;
+    min-height: 0;
+  }
+
+  .content-area {
+    flex: 1;
+    background: var(--white);
+    border-left: 1px solid var(--black);
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    padding: 16px 24px;
+    gap: 16px 32px;
+  }
+
+  /* Folder icon in window */
+  .folder-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    cursor: var(--cursor-arrow);
+    padding: 4px;
+  }
+
+  .folder-icon .icon-img {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+    position: relative;
+  }
+
+
+  /* Scrollbar (right) */
+  .scrollbar-v {
+    width: 16px;
+    background: var(--gray-100);
+    border: 1px solid var(--black);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .scrollbar-track {
+    flex: 1;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        var(--gray-100) 0px,
+        var(--gray-100) 1px,
+        var(--gray-300) 1px,
+        var(--gray-300) 2px
+      );
+  }
+
+  .scroll-btn {
+    width: 14px;
+    height: 16px;
+    background: var(--gray-100);
+    border: 1px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scroll-btn svg {
+    width: 8px;
+    height: 8px;
+    opacity: 0.4;
+  }
+
+  /* Bottom scrollbar + resize */
+  .window-bottom {
+    height: 16px;
+    display: flex;
+    margin: 0 4px;
+    flex-shrink: 0;
+  }
+
+  .scrollbar-h {
+    flex: 1;
+    height: 16px;
+    background: var(--gray-100);
+    border: 1px solid var(--black);
+    display: flex;
+  }
+
+  .scrollbar-h .scrollbar-track {
+    flex: 1;
+    background:
+      repeating-linear-gradient(
+        to right,
+        var(--gray-100) 0px,
+        var(--gray-100) 1px,
+        var(--gray-300) 1px,
+        var(--gray-300) 2px
+      );
+  }
+
+  .resize-handle {
+    width: 16px;
+    height: 16px;
+    background: var(--gray-400);
+    border: 1px solid var(--black);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .resize-handle::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    background:
+      linear-gradient(135deg,
+        transparent 30%,
+        var(--white) 30%, var(--white) 35%,
+        var(--gray-700) 35%, var(--gray-700) 40%,
+        transparent 40%,
+        transparent 55%,
+        var(--white) 55%, var(--white) 60%,
+        var(--gray-700) 60%, var(--gray-700) 65%,
+        transparent 65%,
+        transparent 80%,
+        var(--white) 80%, var(--white) 85%,
+        var(--gray-700) 85%, var(--gray-700) 90%,
+        transparent 90%
+      );
+  }
+
+  .window-spacer {
+    height: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ==================== CONTROL STRIP ==================== */
+  #control-strip {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 28px;
+    background: var(--gray-400);
+    border: 1px solid var(--black);
+    border-bottom: none;
+    border-left: none;
+    display: flex;
+    align-items: stretch;
+    z-index: 10000;
+    padding: 1px;
+    gap: 0;
+  }
+
+  #control-strip.collapsed .cs-app-btn,
+  #control-strip.collapsed .cs-nav-btn,
+  #control-strip.collapsed .cs-expand { display: none; }
+
+  .cs-close-btn, .cs-nav-btn, .cs-app-btn, .cs-expand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #bbb;
+    border: 1px solid var(--black);
+    box-shadow: 1px 1px 0 var(--black),
+      inset 2px 2px 0 var(--white),
+      inset -2px -2px 0 var(--gray-700);
+    cursor: var(--cursor-arrow);
+    padding: 0;
+  }
+
+  .cs-close-btn:active, .cs-nav-btn:active, .cs-app-btn:active,
+  .cs-app-btn.active, .cs-expand:active {
+    box-shadow: 1px 1px 0 var(--black),
+      inset -2px -2px 0 var(--white),
+      inset 2px 2px 0 var(--gray-700);
+  }
+
+  .cs-close-btn { width: 18px; }
+  .cs-close-btn .cs-x {
+    width: 8px; height: 8px; position: relative;
+  }
+  .cs-close-btn .cs-x::before,
+  .cs-close-btn .cs-x::after {
+    content: ''; position: absolute;
+    width: 10px; height: 2px; background: var(--black);
+    top: 3px; left: -1px;
+  }
+  .cs-close-btn .cs-x::before { transform: rotate(45deg); }
+  .cs-close-btn .cs-x::after { transform: rotate(-45deg); }
+
+  .cs-nav-btn { width: 17px; font-size: 8px; color: var(--black); }
+  .cs-expand { width: 17px; font-size: 8px; color: var(--black); }
+
+  .cs-app-btn {
+    gap: 2px; padding: 3px; position: relative;
+  }
+
+  .cs-app-btn img {
+    width: 16px; height: 16px; image-rendering: pixelated;
+  }
+
+  .cs-app-btn .cs-arrow {
+    font-size: 6px; color: var(--black); line-height: 1; margin-top: 2px;
+  }
+
+  /* Control strip popup menus */
+  .cs-popup {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: 2px;
+    background: var(--gray-300);
+    border: 1px solid var(--black);
+    box-shadow: 1px 1px 0 var(--black),
+      inset 2px 2px 0 var(--white),
+      inset -2px -2px 0 var(--gray-700);
+    padding: 2px;
+    z-index: 10002;
+    min-width: 90px;
+    font-family: var(--font-system);
+    font-size: 10px;
+  }
+
+  .cs-popup.visible { display: block; }
+
+  .cs-popup-item {
+    height: 14px;
+    display: flex; align-items: center;
+    padding: 0 8px;
+    white-space: nowrap;
+    color: var(--black);
+    cursor: var(--cursor-arrow);
+  }
+
+  .cs-popup-item:hover { background: #339; color: var(--white); }
+  .cs-popup-item.disabled { color: var(--gray-700); }
+  .cs-popup-item.disabled:hover { background: transparent; color: var(--gray-700); }
+  .cs-popup-item.checked::before { content: '\2022'; margin-right: 4px; font-size: 12px; }
+  .cs-popup-item.selected { background: #339; color: var(--white); }
+
+  .cs-popup-sep {
+    height: 2px; position: relative;
+  }
+  .cs-popup-sep::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gray-600);
+  }
+  .cs-popup-sep::after {
+    content: ''; position: absolute; top: 1px; left: 0; right: 0; height: 1px; background: var(--white);
+  }
+
+  /* Volume slider popup */
+  .cs-volume-popup {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 2px;
+    background: var(--gray-300);
+    border: 1px solid var(--black);
+    box-shadow: 1px 1px 0 var(--black),
+      inset 2px 2px 0 var(--white),
+      inset -2px -2px 0 var(--gray-700);
+    padding: 6px 4px;
+    z-index: 10002;
+    width: 22px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .cs-volume-popup.visible { display: flex; }
+
+  .cs-volume-track {
+    width: 6px; height: 50px;
+    background: var(--white);
+    border: 1px solid var(--gray-700);
+    position: relative;
+    box-shadow: inset 1px 1px 0 var(--gray-600);
+  }
+  .cs-volume-thumb {
+    width: 14px; height: 6px;
+    background: var(--gray-300);
+    border: 1px solid var(--black);
+    box-shadow: inset 1px 1px 0 var(--white), inset -1px -1px 0 var(--gray-700);
+    position: absolute; left: -5px;
+    cursor: var(--cursor-grab);
+  }
+
+  /* ==================== SVG ICONS ==================== */
+  .svg-folder {
+    width: 40px;
+    height: 32px;
+  }
+
+  .svg-hd {
+    width: 48px;
+    height: 32px;
+  }
+
+  .svg-globe {
+    width: 48px;
+    height: 48px;
+  }
+
+  .svg-trash {
+    width: 42px;
+    height: 48px;
+  }
+
+  .svg-shared {
+    width: 48px;
+    height: 40px;
+  }
+
+  /* ==================== LOADING DIALOG ==================== */
+  .loading-dialog {
+    position: absolute;
+    background: var(--gray-400);
+    border: 1px solid var(--black);
+    box-shadow:
+      inset 2px 2px 0 rgba(255,255,255,0.5),
+      inset -2px -2px 0 rgba(38,38,38,0.4),
+      2px 2px 8px rgba(0,0,0,0.3);
+    width: 300px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9998;
+    display: none;
+    flex-direction: column;
+  }
+
+  .loading-dialog.visible {
+    display: flex;
+  }
+
+  .loading-dialog .title-bar {
+    cursor: var(--cursor-arrow);
+  }
+
+  .loading-body {
+    padding: 16px 20px 20px;
+    text-align: center;
+  }
+
+  .loading-body p {
+    font-family: var(--font-system);
+    font-size: 11px;
+    color: var(--black);
+    margin-bottom: 12px;
+  }
+
+  .loading-body .loading-url {
+    font-size: 9px;
+    color: var(--gray-700);
+    margin-bottom: 10px;
+  }
+
+  /* OS 9 Progress Bar */
+  .os9-progress {
+    width: 100%;
+    height: 12px;
+    background: #bbb;
+    border: 1px solid var(--black);
+    position: relative;
+    box-shadow:
+      inset 1px 1px 0 var(--gray-700),
+      inset -1px -1px 0 var(--white);
+  }
+
+  .os9-progress-fill {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    bottom: 1px;
+    width: 0%;
+    background: linear-gradient(
+      to bottom,
+      #262673 0%,
+      #4040a6 5%,
+      #5959bf 10%,
+      #7373d9 15%,
+      #8c8cf2 20%,
+      #a6a6ff 25%,
+      #bfbfff 30%,
+      #d4d4fb 35%,
+      #e5e5f2 40%,
+      #ececef 45%,
+      #ececef 55%,
+      #e5e5f2 60%,
+      #d4d4fb 65%,
+      #bfbfff 70%,
+      #a6a6ff 75%,
+      #8c8cf2 80%,
+      #7373d9 85%,
+      #5959bf 90%,
+      #4040a6 95%,
+      #262673 100%
+    );
+    overflow: hidden;
+    transition: width 0.3s ease;
+  }
+
+  .os9-progress-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -55deg,
+      transparent,
+      transparent 3px,
+      rgba(255,255,255,0.15) 3px,
+      rgba(255,255,255,0.15) 6px
+    );
+    animation: barber-pole 0.6s linear infinite;
+    background-size: 12px 12px;
+  }
+
+  @keyframes barber-pole {
+    from { background-position: 0 0; }
+    to { background-position: 12px 0; }
+  }
+
+  .loading-status {
+    font-family: var(--font-system);
+    font-size: 9px;
+    color: var(--gray-700);
+    margin-top: 6px;
+    text-align: left;
+  }
+
+  /* ==================== OS9 ALERT DIALOG ==================== */
+  #os9-alert {
+    position: absolute;
+    background: var(--gray-400);
+    border: 1px solid var(--black);
+    box-shadow:
+      inset 2px 2px 0 rgba(255,255,255,0.5),
+      inset -2px -2px 0 rgba(38,38,38,0.4),
+      2px 2px 8px rgba(0,0,0,0.3);
+    width: 280px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9998;
+    display: none;
+    flex-direction: column;
+  }
+
+  #os9-alert.visible { display: flex; }
+
+  .alert-body {
+    padding: 16px 20px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .alert-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  .alert-text {
+    font-family: var(--font-system);
+    font-size: 11px;
+    color: var(--black);
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .alert-buttons {
+    padding: 0 20px 14px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .os9-btn {
+    font-family: var(--font-chicago);
+    font-size: 11px;
+    background: var(--gray-300);
+    border: 2px solid var(--black);
+    border-radius: 4px;
+    padding: 3px 16px;
+    cursor: var(--cursor-arrow);
+    color: var(--black);
+    box-shadow: inset 1px 1px 0 var(--white), inset -1px -1px 0 var(--gray-600);
+  }
+
+  .os9-btn:active {
+    background: var(--black);
+    color: var(--white);
+    box-shadow: none;
+  }
+
+  /* ==================== DRAG BEHAVIORS ==================== */
+
+  /* Window drag outline (shown while dragging instead of real window) */
+  #window-drag-outline {
+    position: absolute;
+    border: none;
+    pointer-events: none;
+    z-index: 9999;
+    display: none;
+    background: none;
+  }
+
+  #window-drag-outline::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-conic-gradient(#000 0% 25%, transparent 0% 50%);
+    background-size: 2px 2px;
+  }
+
+  .window.is-dragging {
+    visibility: hidden;
+  }
+
+  /* Desktop icon dragging */
+  .desktop-icon {
+    transition: none;
+  }
+
+  .desktop-icon.is-dragging {
+    opacity: 0.5;
+    z-index: 9000;
+  }
+
+  /* Ghost outline for icon drag */
+  #icon-drag-ghost {
+    position: absolute;
+    pointer-events: none;
+    z-index: 9001;
+    opacity: 0.6;
+    display: none;
+  }
+
+  /* ==================== BROWSER WINDOW ==================== */
+  .browser-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px;
+    background: var(--gray-300);
+    border-bottom: 1px solid var(--gray-600);
+    flex-shrink: 0;
+    margin: 0 4px;
+    box-shadow:
+      inset 2px 2px 0 var(--white),
+      inset -2px -2px 0 rgba(38,38,38,0.4);
+  }
+
+  .browser-nav-btn {
+    width: 22px;
+    height: 18px;
+    background: var(--gray-300);
+    border: 1px solid var(--black);
+    box-shadow: inset 1px 1px 0 var(--white), inset -1px -1px 0 var(--gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: var(--cursor-arrow);
+    flex-shrink: 0;
+    font-size: 10px;
+    color: var(--black);
+  }
+
+  .browser-nav-btn:active {
+    box-shadow: inset -1px -1px 0 var(--white), inset 1px 1px 0 var(--gray-600);
+  }
+
+  .browser-url-bar {
+    flex: 1;
+    height: 18px;
+    border: 1px solid var(--black);
+    box-shadow: inset 1px 1px 0 var(--gray-600), inset -1px -1px 0 var(--white);
+    background: white;
+    padding: 0 4px;
+    font-family: var(--font-system);
+    font-size: 10px;
+    color: var(--black);
+    outline: none;
+  }
+
+  .browser-url-label {
+    font-family: var(--font-chicago);
+    font-size: 10px;
+    color: var(--black);
+    flex-shrink: 0;
+  }
+
+  .browser-content {
+    flex: 1;
+    background: white;
+    margin: 0 4px;
+    border: 1px solid var(--black);
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+  }
+
+  /* Override scrollbar in browser content for OS9 feel */
+  .browser-content::-webkit-scrollbar { width: 16px; }
+  .browser-content::-webkit-scrollbar-track { background: var(--gray-100); border-left: 1px solid var(--black); }
+  .browser-content::-webkit-scrollbar-thumb { background: var(--gray-400); border: 1px solid var(--black); }
+
+  /* ==================== 2001 SOCIAL MEDIA SITE ==================== */
+  .retro-site {
+    font-family: 'Times New Roman', 'Georgia', serif;
+    font-size: 12px;
+    color: #000;
+    line-height: 1.4;
+  }
+
+  .retro-site a { color: #0000FF; }
+  .retro-site a:visited { color: #660099; }
+  .retro-site a:hover { color: #FF0000; }
+
+  .retro-header {
+    background: linear-gradient(to right, #000066, #3333CC, #6666FF);
+    color: white;
+    padding: 8px 12px;
+    text-align: center;
+    border-bottom: 3px solid #FFCC00;
+  }
+
+  .retro-header h1 {
+    font-family: 'Arial Black', 'Impact', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 0 #000;
+    margin: 0;
+  }
+
+  .retro-header .tagline {
+    font-size: 10px;
+    font-style: italic;
+    color: #CCCCFF;
+    margin-top: 2px;
+  }
+
+  .retro-nav {
+    background: #CCCCFF;
+    border-bottom: 2px solid #9999CC;
+    padding: 4px 8px;
+    text-align: center;
+    font-family: 'Verdana', sans-serif;
+    font-size: 10px;
+  }
+
+  .retro-nav a {
+    color: #000066;
+    text-decoration: none;
+    padding: 2px 8px;
+    font-weight: bold;
+  }
+
+  .retro-nav a:hover {
+    background: #9999FF;
+    color: white;
+  }
+
+  .retro-nav .sep { color: #9999CC; }
+
+  .retro-body {
+    display: flex;
+    min-height: 300px;
+  }
+
+  .retro-sidebar {
+    width: 140px;
+    background: #EEEEFF;
+    border-right: 2px solid #CCCCDD;
+    padding: 8px;
+    flex-shrink: 0;
+    font-family: 'Verdana', sans-serif;
+    font-size: 9px;
+  }
+
+  .retro-sidebar h3 {
+    font-size: 10px;
+    color: #000066;
+    border-bottom: 1px solid #9999CC;
+    padding-bottom: 2px;
+    margin: 0 0 4px 0;
+  }
+
+  .retro-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+  }
+
+  .retro-sidebar li {
+    padding: 1px 0;
+  }
+
+  .retro-sidebar li a {
+    font-size: 9px;
+    text-decoration: none;
+    color: #0000CC;
+  }
+
+  .retro-sidebar li a:hover { text-decoration: underline; }
+
+  .retro-sidebar .online-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00CC00;
+    margin-right: 3px;
+  }
+
+  .retro-sidebar .offline-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #CC0000;
+    margin-right: 3px;
+  }
+
+  .retro-main {
+    flex: 1;
+    padding: 8px 12px;
+    min-width: 0;
+  }
+
+  .retro-marquee {
+    background: #FFFFCC;
+    border: 1px solid #CCCC99;
+    padding: 3px 8px;
+    font-family: 'Comic Sans MS', 'Verdana', sans-serif;
+    font-size: 10px;
+    color: #CC0000;
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-bottom: 8px;
+  }
+
+  .retro-marquee .scroll-text {
+    display: inline-block;
+    animation: marquee-scroll 12s linear infinite;
+  }
+
+  @keyframes marquee-scroll {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .retro-post {
+    border: 1px solid #CCCCCC;
+    margin-bottom: 8px;
+    background: #FAFAFA;
+  }
+
+  .retro-post-header {
+    background: linear-gradient(to bottom, #DDDDFF, #CCCCEE);
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid #BBBBDD;
+  }
+
+  .retro-avatar {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #9999CC;
+    background: #EEEEFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .retro-post-meta {
+    font-family: 'Verdana', sans-serif;
+    font-size: 9px;
+  }
+
+  .retro-post-meta .username {
+    font-weight: bold;
+    color: #000066;
+  }
+
+  .retro-post-meta .timestamp {
+    color: #666;
+    font-size: 8px;
+  }
+
+  .retro-post-body {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
+  .retro-post-actions {
+    padding: 3px 8px;
+    border-top: 1px solid #EEEEEE;
+    font-family: 'Verdana', sans-serif;
+    font-size: 8px;
+  }
+
+  .retro-post-actions a {
+    font-size: 8px;
+    margin-right: 8px;
+    color: #666;
+  }
+
+  .retro-profile-card {
+    border: 2px ridge #CCCCCC;
+    padding: 8px;
+    margin-bottom: 8px;
+    background: #FFFFF0;
+    text-align: center;
+    font-family: 'Verdana', sans-serif;
+    font-size: 9px;
+  }
+
+  .retro-profile-card .profile-pic {
+    width: 48px;
+    height: 48px;
+    border: 2px solid #9999CC;
+    background: url('Avatar.png') center/cover no-repeat;
+    margin: 0 auto 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .retro-profile-card .profile-name {
+    font-weight: bold;
+    color: #000066;
+    font-size: 11px;
+  }
+
+  .retro-profile-card .profile-status {
+    color: #666;
+    font-style: italic;
+    font-size: 8px;
+    margin-top: 2px;
+  }
+
+  .retro-btn {
+    font-family: 'Verdana', sans-serif;
+    font-size: 9px;
+    background: var(--gray-300);
+    border: 2px outset #ccc;
+    padding: 2px 10px;
+    cursor: var(--cursor-arrow);
+    color: var(--black);
+  }
+
+  .retro-btn:active {
+    border-style: inset;
+  }
+
+  .retro-input {
+    font-family: 'Verdana', sans-serif;
+    font-size: 9px;
+    border: 2px inset #ccc;
+    padding: 2px 4px;
+    background: white;
+    outline: none;
+  }
+
+  .retro-guestbook {
+    border: 2px ridge #CCCCCC;
+    padding: 8px;
+    background: #FFFFF8;
+    margin-bottom: 8px;
+  }
+
+  .retro-guestbook h4 {
+    font-family: 'Comic Sans MS', 'Verdana', sans-serif;
+    font-size: 11px;
+    color: #660099;
+    margin: 0 0 4px 0;
+  }
+
+  .retro-guestbook textarea {
+    width: 100%;
+    height: 40px;
+    font-family: 'Verdana', sans-serif;
+    font-size: 9px;
+    border: 2px inset #ccc;
+    resize: none;
+    outline: none;
+    padding: 2px;
+  }
+
+  .retro-footer {
+    background: #CCCCDD;
+    border-top: 2px solid #9999AA;
+    padding: 6px;
+    text-align: center;
+    font-family: 'Verdana', sans-serif;
+    font-size: 8px;
+    color: #666;
+  }
+
+  .retro-footer .hit-counter {
+    display: inline-block;
+    background: black;
+    color: #00FF00;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    padding: 1px 6px;
+    border: 1px inset #666;
+    margin: 2px 0;
+    letter-spacing: 1px;
+  }
+
+  .retro-hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #9999CC, transparent);
+    margin: 6px 0;
+  }
+
+  .retro-blink {
+    animation: blink-text 1s step-end infinite;
+  }
+
+  @keyframes blink-text {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .retro-badge {
+    display: inline-block;
+    border: 1px solid #999;
+    padding: 2px 4px;
+    margin: 2px;
+    font-family: 'Verdana', sans-serif;
+    font-size: 7px;
+    background: linear-gradient(to bottom, #eee, #ccc);
+  }
+
+  /* ==================== PHOTO FEED ==================== */
+  .retro-feed { display: none; }
+  .retro-feed.active { display: block; }
+  .retro-home { display: none; }
+  .retro-home.active { display: flex; }
+
+  .retro-nav a.active-tab {
+    background: #9999FF;
+    color: white;
+  }
+
+  .feed-post {
+    border: 2px ridge #BBBBCC;
+    margin-bottom: 10px;
+    background: #FAFAFA;
+    font-family: 'Verdana', sans-serif;
+  }
+
+  .feed-post-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-bottom: 1px solid #DDDDEE;
+    background: linear-gradient(to bottom, #EEEEFF, #DDDDEE);
+  }
+
+  .feed-avatar {
+    width: 28px;
+    height: 28px;
+    border: 2px solid #9999CC;
+    background: #EEEEFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .feed-user-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .feed-username {
+    font-size: 10px;
+    font-weight: bold;
+    color: #000066;
+  }
+
+  .feed-username a { color: #000066; text-decoration: none; }
+  .feed-username a:hover { text-decoration: underline; }
+
+  .feed-time {
+    font-size: 8px;
+    color: #888;
+  }
+
+  .feed-follow-btn {
+    font-family: 'Verdana', sans-serif;
+    font-size: 8px;
+    background: linear-gradient(to bottom, #EEEEFF, #CCCCDD);
+    border: 1px solid #8888AA;
+    padding: 2px 8px;
+    cursor: var(--cursor-arrow);
+    color: #000066;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .feed-follow-btn:hover {
+    background: linear-gradient(to bottom, #DDDDFF, #BBBBCC);
+  }
+
+  .feed-follow-btn.following {
+    background: linear-gradient(to bottom, #CCFFCC, #99CC99);
+    border-color: #669966;
+    color: #006600;
+  }
+
+  .feed-photo {
+    width: 100%;
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    overflow: hidden;
+  }
+
+  .feed-actions {
+    padding: 5px 8px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    border-bottom: 1px solid #EEEEEE;
+  }
+
+  .feed-like-btn {
+    font-family: 'Verdana', sans-serif;
+    font-size: 9px;
+    background: none;
+    border: none;
+    cursor: var(--cursor-arrow);
+    color: #666;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .feed-like-btn .heart {
+    font-size: 12px;
+    color: #999;
+    transition: color 0.15s;
+  }
+
+  .feed-like-btn.liked .heart {
+    color: #CC0000;
+  }
+
+  .feed-like-btn:hover .heart {
+    color: #FF3333;
+  }
+
+  .feed-comment-count {
+    font-family: 'Verdana', sans-serif;
+    font-size: 9px;
+    color: #666;
+  }
+
+  .feed-caption {
+    padding: 4px 8px 2px;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .feed-caption .cap-user {
+    font-weight: bold;
+    color: #000066;
+  }
+
+  .feed-comments {
+    padding: 0 8px 4px;
+  }
+
+  .feed-comment {
+    font-size: 9px;
+    color: #333;
+    padding: 1px 0;
+    line-height: 1.3;
+  }
+
+  .feed-comment .cmt-user {
+    font-weight: bold;
+    color: #000066;
+    font-size: 9px;
+  }
+
+  .feed-show-more {
+    font-family: 'Verdana', sans-serif;
+    font-size: 8px;
+    color: #888;
+    cursor: var(--cursor-arrow);
+    padding: 0 8px 6px;
+  }
+
+  .feed-show-more:hover {
+    color: #000066;
+    text-decoration: underline;
+  }
+
+  /* Follow confirmation popup */
+  #follow-confirm {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #follow-confirm.visible {
+    display: flex;
+  }
+
+  #follow-confirm-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.15);
+  }
+
+  #follow-confirm-box {
+    position: relative;
+    background: var(--gray-400);
+    border: 1px solid var(--black);
+    box-shadow:
+      inset 2px 2px 0 rgba(255,255,255,0.5),
+      inset -2px -2px 0 rgba(38,38,38,0.4),
+      4px 4px 12px rgba(0,0,0,0.4);
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .follow-confirm-body {
+    padding: 14px 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .follow-confirm-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  .follow-confirm-text {
+    font-family: var(--font-system);
+    font-size: 11px;
+    color: var(--black);
+    line-height: 1.4;
+  }
+
+  .follow-confirm-text b { color: #000066; }
+
+  .follow-confirm-buttons {
+    padding: 0 16px 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .retro-webring {
+    text-align: center;
+    font-family: 'Verdana', sans-serif;
+    font-size: 8px;
+    padding: 4px;
+    margin-top: 4px;
+    border: 1px dashed #999;
+    background: #EEEEFF;
+  }
+
+  /* ==================== VIRUS POPUP ==================== */
+  #virus-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    pointer-events: all;
+  }
+
+  #virus-overlay.active {
+    display: block;
+  }
+
+  .virus-popup {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background: var(--gray-300);
+    border: 2px solid var(--black);
+    box-shadow: 2px 2px 0 var(--black),
+      inset 2px 2px 0 var(--white),
+      inset -2px -2px 0 var(--gray-700);
+    overflow: hidden;
+    animation: virus-shake 0.08s infinite alternate;
+  }
+
+  .virus-popup .virus-title {
+    height: 18px;
+    background: linear-gradient(90deg, #000080, #1084d0);
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    font-family: var(--font-chicago);
+    font-size: 11px;
+    color: var(--white);
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+
+  .virus-popup .virus-title .v-close {
+    width: 12px;
+    height: 12px;
+    background: var(--gray-300);
+    border: 1px solid var(--black);
+    box-shadow: inset 1px 1px 0 var(--white), inset -1px -1px 0 var(--gray-700);
+    margin-right: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: var(--black);
+    line-height: 1;
+    cursor: var(--cursor-pointer);
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .virus-popup .virus-title .v-close::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+  }
+
+  .virus-popup .virus-body {
+    padding: 10px;
+    text-align: center;
+    font-family: var(--font-system);
+    font-size: 11px;
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .virus-popup .virus-body .virus-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .virus-popup .virus-body .virus-bg canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .virus-popup .virus-body .virus-content {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 0 4px #fff, 0 0 4px #fff;
+    width: 100%;
+  }
+
+  .virus-popup .virus-body .virus-icon {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+
+  .virus-popup .virus-body .virus-msg {
+    margin-bottom: 8px;
+    color: #cc0000;
+    font-weight: bold;
+    font-size: 11px;
+  }
+
+  .virus-popup .virus-body .virus-btn {
+    display: inline-block;
+    padding: 2px 16px;
+    background: var(--gray-300);
+    border: 2px solid var(--black);
+    box-shadow: inset 1px 1px 0 var(--white), inset -1px -1px 0 var(--gray-700);
+    font-family: var(--font-chicago);
+    font-size: 11px;
+    cursor: var(--cursor-arrow);
+    margin: 2px;
+  }
+
+  .virus-popup .virus-body .virus-btn:active {
+    box-shadow: inset -1px -1px 0 var(--white), inset 1px 1px 0 var(--gray-700);
+  }
+
+  @keyframes virus-shake {
+    0% { transform: translate(-1px, -1px) rotate(-0.3deg); }
+    100% { transform: translate(1px, 1px) rotate(0.3deg); }
+  }
+
+  @keyframes virus-spawn {
+    from { transform: scale(0) rotate(-15deg); opacity: 0; }
+    to { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== MENU BAR ==================== -->
+<div id="menubar">
+  <div class="apple-logo" data-menu="apple">
+    <img src="apple-logo.png" alt="Apple" style="width:14px;height:16px;image-rendering:pixelated;">
+    <div class="dropdown-menu" id="menu-apple">
+      <div class="dropdown-item">About This Computer</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item">Apple System Profiler</div>
+      <div class="dropdown-item">Calculator</div>
+      <div class="dropdown-item">Chooser</div>
+      <div class="dropdown-item">Control Panels<span class="submenu-arrow">&#9654;</span></div>
+      <div class="dropdown-item">Favorites<span class="submenu-arrow">&#9654;</span></div>
+      <div class="dropdown-item">Key Caps</div>
+      <div class="dropdown-item">Network Browser</div>
+      <div class="dropdown-item">Recent Applications<span class="submenu-arrow">&#9654;</span></div>
+      <div class="dropdown-item">Recent Documents<span class="submenu-arrow">&#9654;</span></div>
+      <div class="dropdown-item">Scrapbook</div>
+      <div class="dropdown-item">Sherlock 2</div>
+      <div class="dropdown-item">Stickies</div>
+    </div>
+  </div>
+  <div class="menu-item" data-menu="file">File
+    <div class="dropdown-menu" id="menu-file">
+      <div class="dropdown-item">New Folder<span class="shortcut">&#8984;N</span></div>
+      <div class="dropdown-item">Open<span class="shortcut">&#8984;O</span></div>
+      <div class="dropdown-item disabled">Print<span class="shortcut">&#8984;P</span></div>
+      <div class="dropdown-item">Close Window<span class="shortcut">&#8984;W</span></div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item">Get Info<span class="shortcut">&#8984;I</span></div>
+      <div class="dropdown-item disabled">Label</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item disabled">Duplicate<span class="shortcut">&#8984;D</span></div>
+      <div class="dropdown-item disabled">Make Alias</div>
+      <div class="dropdown-item disabled">Put Away</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item">Find...<span class="shortcut">&#8984;F</span></div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item disabled">Page Setup...</div>
+    </div>
+  </div>
+  <div class="menu-item" data-menu="edit">Edit
+    <div class="dropdown-menu" id="menu-edit">
+      <div class="dropdown-item disabled">Undo<span class="shortcut">&#8984;Z</span></div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item disabled">Cut<span class="shortcut">&#8984;X</span></div>
+      <div class="dropdown-item disabled">Copy<span class="shortcut">&#8984;C</span></div>
+      <div class="dropdown-item disabled">Paste<span class="shortcut">&#8984;V</span></div>
+      <div class="dropdown-item">Clear</div>
+      <div class="dropdown-item">Select All<span class="shortcut">&#8984;A</span></div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item disabled">Show Clipboard</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item">Preferences...</div>
+    </div>
+  </div>
+  <div class="menu-item" data-menu="view">View
+    <div class="dropdown-menu" id="menu-view">
+      <div class="dropdown-item">as Icons</div>
+      <div class="dropdown-item">as Buttons</div>
+      <div class="dropdown-item disabled">as List</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item disabled">as Window</div>
+      <div class="dropdown-item disabled">as Pop-up Window</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item disabled">Clean Up</div>
+      <div class="dropdown-item disabled">Arrange<span class="submenu-arrow">&#9654;</span></div>
+      <div class="dropdown-item disabled">Reset Column Positions</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item">View Options...</div>
+    </div>
+  </div>
+  <div class="menu-item" data-menu="special">Special
+    <div class="dropdown-menu" id="menu-special">
+      <div class="dropdown-item">Empty Trash...</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item disabled">Eject<span class="shortcut">&#8984;E</span></div>
+      <div class="dropdown-item disabled">Erase Disk...</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item">Sleep</div>
+      <div class="dropdown-item">Restart</div>
+      <div class="dropdown-item">Shut Down</div>
+    </div>
+  </div>
+  <div class="menu-item" data-menu="help">Help
+    <div class="dropdown-menu" id="menu-help">
+      <div class="dropdown-item">About Balloon Help...</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item">Show Balloons</div>
+      <div class="dropdown-separator"></div>
+      <div class="dropdown-item">Mac Help<span class="shortcut">&#8984;?</span></div>
+    </div>
+  </div>
+
+  <div class="menu-right">
+    <span id="menu-clock"></span>
+    <div class="menu-separator"></div>
+    <div class="finder-icon">
+      <img src="finder-icon.png" alt="Finder" style="width:16px;height:16px;image-rendering:pixelated;">
+    </div>
+    <span class="menu-item" style="font-weight:bold">Finder</span>
+  </div>
+</div>
+
+<!-- ==================== DESKTOP ==================== -->
+<div id="desktop">
+
+  <!-- Desktop Icons -->
+  <div class="desktop-icon" id="icon-hd" style="right: 20px; top: 40px;">
+    <div class="icon-img">
+      <svg viewBox="0 0 48 32" class="svg-hd">
+        <rect x="2" y="4" width="44" height="22" rx="3" fill="#c0c0c0" stroke="#666" stroke-width="1.5"/>
+        <rect x="4" y="6" width="40" height="18" rx="2" fill="#e8e8e8"/>
+        <line x1="6" y1="20" x2="42" y2="20" stroke="#999" stroke-width="0.5"/>
+        <rect x="19" y="22" width="10" height="3" fill="#aaa"/>
+        <circle cx="38" cy="15" r="1.5" fill="#4CAF50"/>
+      </svg>
+    </div>
+    <span class="icon-label">MacOS 9HD</span>
+  </div>
+
+  <div class="desktop-icon" id="icon-shared" style="right: 20px; top: 140px;">
+    <div class="icon-img">
+      <svg viewBox="0 0 48 40" class="svg-shared">
+        <rect x="4" y="8" width="40" height="28" rx="2" fill="#c0c0c0" stroke="#666" stroke-width="1"/>
+        <rect x="6" y="10" width="36" height="24" rx="1" fill="#e8e8e8"/>
+        <path d="M10 22 L24 14 L38 22 L38 32 L10 32 Z" fill="#c9a96e"/>
+        <rect x="19" y="24" width="10" height="8" fill="#8B6914"/>
+        <path d="M14 2 L34 2 L38 8 L10 8 Z" fill="#ddd" stroke="#666" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <span class="icon-label">Shared Folder</span>
+  </div>
+
+  <div class="desktop-icon" id="icon-internet" style="right: 16px; top: 244px;">
+    <div class="icon-img">
+      <svg viewBox="0 0 48 48" class="svg-globe">
+        <circle cx="24" cy="24" r="20" fill="#4488DD" stroke="#333" stroke-width="1"/>
+        <ellipse cx="24" cy="24" rx="10" ry="20" fill="none" stroke="#2266AA" stroke-width="0.8"/>
+        <line x1="4" y1="24" x2="44" y2="24" stroke="#2266AA" stroke-width="0.8"/>
+        <ellipse cx="24" cy="16" rx="17" ry="4" fill="none" stroke="#2266AA" stroke-width="0.6"/>
+        <ellipse cx="24" cy="32" rx="17" ry="4" fill="none" stroke="#2266AA" stroke-width="0.6"/>
+        <circle cx="24" cy="24" r="20" fill="none" stroke="#333" stroke-width="1"/>
+        <path d="M8 10 L16 8 L18 14 L10 16 Z" fill="#4CAF50" opacity="0.7"/>
+        <path d="M28 6 L38 8 L36 14 L30 12 Z" fill="#4CAF50" opacity="0.6"/>
+        <path d="M6 28 L14 26 L16 34 L8 36 Z" fill="#4CAF50" opacity="0.5"/>
+        <path d="M30 30 L40 28 L42 34 L32 36 Z" fill="#4CAF50" opacity="0.5"/>
+      </svg>
+    </div>
+    <span class="icon-label">Browse the Internet</span>
+  </div>
+
+  <div class="desktop-icon" id="icon-trash" style="right: 24px; bottom: 30px;">
+    <div class="icon-img">
+      <svg viewBox="0 0 42 48" class="svg-trash">
+        <rect x="6" y="10" width="30" height="34" rx="2" fill="#c0c0c0" stroke="#666" stroke-width="1"/>
+        <rect x="8" y="12" width="26" height="30" rx="1" fill="#ddd"/>
+        <line x1="14" y1="16" x2="14" y2="38" stroke="#999" stroke-width="1"/>
+        <line x1="21" y1="16" x2="21" y2="38" stroke="#999" stroke-width="1"/>
+        <line x1="28" y1="16" x2="28" y2="38" stroke="#999" stroke-width="1"/>
+        <rect x="4" y="6" width="34" height="5" rx="1" fill="#c0c0c0" stroke="#666" stroke-width="1"/>
+        <rect x="14" y="2" width="14" height="5" rx="1" fill="#c0c0c0" stroke="#666" stroke-width="1"/>
+      </svg>
+    </div>
+    <span class="icon-label">Trash</span>
+  </div>
+
+  <!-- ==================== FINDER WINDOW ==================== -->
+  <div class="window" id="finder-window" style="left: 280px; top: 80px; width: 520px; height: 360px;">
+    <!-- Title Bar -->
+    <div class="title-bar draggable-title" data-window="finder-window">
+      <div class="window-btn close-btn" data-close="finder-window"></div>
+      <div class="title-bar-stripes"></div>
+      <div class="title-bar-center">
+        <div class="hd-icon">
+          <svg viewBox="0 0 13 8" fill="none">
+            <rect x="0" y="0" width="13" height="8" rx="1.5" fill="#c0c0c0" stroke="#666" stroke-width="0.8"/>
+            <circle cx="10" cy="4" r="1" fill="#4CAF50"/>
+          </svg>
+        </div>
+        <span>Mac OS 45 HD</span>
+      </div>
+      <div class="title-bar-stripes"></div>
+      <div class="window-btn zoom-btn"></div>
+      <div class="window-btn collapse-btn" style="margin-left: 2px;"></div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>7 items, 12.44 GB available</span>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="finder-nav-bar">
+      <div class="finder-back-btn disabled" id="finder-back-btn">
+        <span class="back-arrow">&#9664;</span> Back
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="window-content">
+      <div class="content-area" id="content-area">
+        <!-- Apple Extras -->
+        <div class="folder-icon">
+          <div class="icon-img">
+            <svg viewBox="0 0 40 32" class="svg-folder">
+              <path d="M2 6 L16 6 L18 2 L2 2 Z" fill="#8888DD" stroke="#555" stroke-width="0.5"/>
+              <rect x="2" y="6" width="36" height="24" rx="2" fill="#9999EE" stroke="#555" stroke-width="0.5"/>
+              <rect x="4" y="8" width="32" height="20" rx="1" fill="#AAAAFF"/>
+            </svg>
+          </div>
+          <span class="icon-label">Apple Extras</span>
+        </div>
+
+        <!-- Applications -->
+        <div class="folder-icon">
+          <div class="icon-img">
+            <svg viewBox="0 0 40 32" class="svg-folder">
+              <path d="M2 6 L16 6 L18 2 L2 2 Z" fill="#8888DD" stroke="#555" stroke-width="0.5"/>
+              <rect x="2" y="6" width="36" height="24" rx="2" fill="#9999EE" stroke="#555" stroke-width="0.5"/>
+              <rect x="4" y="8" width="32" height="20" rx="1" fill="#AAAAFF"/>
+              <rect x="12" y="11" width="16" height="14" rx="1" fill="#ddd" stroke="#888" stroke-width="0.5"/>
+              <line x1="14" y1="15" x2="26" y2="15" stroke="#aaa" stroke-width="0.5"/>
+              <line x1="14" y1="18" x2="26" y2="18" stroke="#aaa" stroke-width="0.5"/>
+              <line x1="14" y1="21" x2="22" y2="21" stroke="#aaa" stroke-width="0.5"/>
+            </svg>
+          </div>
+          <span class="icon-label">Applications</span>
+        </div>
+
+        <!-- Assistants -->
+        <div class="folder-icon">
+          <div class="icon-img">
+            <svg viewBox="0 0 40 32" class="svg-folder">
+              <path d="M2 6 L16 6 L18 2 L2 2 Z" fill="#8888DD" stroke="#555" stroke-width="0.5"/>
+              <rect x="2" y="6" width="36" height="24" rx="2" fill="#9999EE" stroke="#555" stroke-width="0.5"/>
+              <rect x="4" y="8" width="32" height="20" rx="1" fill="#AAAAFF"/>
+              <text x="20" y="22" text-anchor="middle" font-size="10" fill="#555">?</text>
+            </svg>
+          </div>
+          <span class="icon-label">Assistants</span>
+        </div>
+
+        <!-- Documents -->
+        <div class="folder-icon">
+          <div class="icon-img">
+            <svg viewBox="0 0 40 32" class="svg-folder">
+              <path d="M2 6 L16 6 L18 2 L2 2 Z" fill="#8888DD" stroke="#555" stroke-width="0.5"/>
+              <rect x="2" y="6" width="36" height="24" rx="2" fill="#9999EE" stroke="#555" stroke-width="0.5"/>
+              <rect x="4" y="8" width="32" height="20" rx="1" fill="#AAAAFF"/>
+            </svg>
+          </div>
+          <span class="icon-label">Documents</span>
+        </div>
+
+        <!-- Internet -->
+        <div class="folder-icon">
+          <div class="icon-img">
+            <svg viewBox="0 0 48 40" class="svg-folder" style="width:48px;height:40px">
+              <path d="M2 8 L18 8 L20 4 L2 4 Z" fill="#8888DD" stroke="#555" stroke-width="0.5"/>
+              <rect x="2" y="8" width="44" height="28" rx="2" fill="#9999EE" stroke="#555" stroke-width="0.5"/>
+              <rect x="4" y="10" width="40" height="24" rx="1" fill="#AAAAFF"/>
+              <circle cx="24" cy="22" r="8" fill="none" stroke="#4488DD" stroke-width="1.5"/>
+              <ellipse cx="24" cy="22" rx="4" ry="8" fill="none" stroke="#4488DD" stroke-width="0.8"/>
+              <line x1="16" y1="22" x2="32" y2="22" stroke="#4488DD" stroke-width="0.8"/>
+            </svg>
+          </div>
+          <span class="icon-label">Internet</span>
+        </div>
+
+        <!-- System Folder -->
+        <div class="folder-icon">
+          <div class="icon-img">
+            <svg viewBox="0 0 48 40" class="svg-folder" style="width:48px;height:40px">
+              <path d="M2 8 L18 8 L20 4 L2 4 Z" fill="#8888DD" stroke="#555" stroke-width="0.5"/>
+              <rect x="2" y="8" width="44" height="28" rx="2" fill="#9999EE" stroke="#555" stroke-width="0.5"/>
+              <rect x="4" y="10" width="40" height="24" rx="1" fill="#AAAAFF"/>
+              <rect x="14" y="14" width="20" height="16" rx="1" fill="#c0c0c0" stroke="#666" stroke-width="0.5"/>
+              <rect x="16" y="16" width="16" height="12" fill="#4488DD"/>
+              <text x="24" y="25" text-anchor="middle" font-size="8" fill="white" font-weight="bold">Mac</text>
+            </svg>
+          </div>
+          <span class="icon-label">System Folder</span>
+        </div>
+
+        <!-- Utilities -->
+        <div class="folder-icon">
+          <div class="icon-img">
+            <svg viewBox="0 0 48 40" class="svg-folder" style="width:48px;height:40px">
+              <path d="M2 8 L18 8 L20 4 L2 4 Z" fill="#8888DD" stroke="#555" stroke-width="0.5"/>
+              <rect x="2" y="8" width="44" height="28" rx="2" fill="#9999EE" stroke="#555" stroke-width="0.5"/>
+              <rect x="4" y="10" width="40" height="24" rx="1" fill="#AAAAFF"/>
+              <path d="M18 16 L22 14 L28 24 L24 26 Z" fill="#888" stroke="#555" stroke-width="0.5"/>
+              <circle cx="20" cy="15" r="4" fill="none" stroke="#888" stroke-width="1"/>
+            </svg>
+          </div>
+          <span class="icon-label">Utilities</span>
+        </div>
+      </div>
+
+      <!-- Vertical Scrollbar -->
+      <div class="scrollbar-v">
+        <div class="scrollbar-track"></div>
+        <div class="scroll-btn">
+          <svg viewBox="0 0 8 8"><path d="M1 5 L4 2 L7 5" stroke="#262626" stroke-width="1.5" fill="none"/></svg>
+        </div>
+        <div class="scroll-btn">
+          <svg viewBox="0 0 8 8"><path d="M1 3 L4 6 L7 3" stroke="#262626" stroke-width="1.5" fill="none"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Scrollbar -->
+    <div class="window-bottom">
+      <div class="scrollbar-h">
+        <div class="scroll-btn" style="width:16px;height:14px;">
+          <svg viewBox="0 0 8 8"><path d="M5 1 L2 4 L5 7" stroke="#262626" stroke-width="1.5" fill="none"/></svg>
+        </div>
+        <div class="scrollbar-track"></div>
+        <div class="scroll-btn" style="width:16px;height:14px;">
+          <svg viewBox="0 0 8 8"><path d="M3 1 L6 4 L3 7" stroke="#262626" stroke-width="1.5" fill="none"/></svg>
+        </div>
+      </div>
+      <div class="resize-handle"></div>
+    </div>
+
+    <div class="window-spacer"></div>
+  </div>
+
+  <!-- ==================== OS9 ALERT DIALOG ==================== -->
+  <div id="os9-alert">
+    <div class="title-bar" style="cursor:default;">
+      <div class="window-btn" style="visibility:hidden"></div>
+      <div class="title-bar-stripes"></div>
+      <div class="title-bar-center">
+        <span id="alert-title">Alert</span>
+      </div>
+      <div class="title-bar-stripes"></div>
+      <div class="window-btn" style="visibility:hidden"></div>
+    </div>
+    <div class="alert-body">
+      <div class="alert-icon">
+        <svg viewBox="0 0 32 32">
+          <rect x="2" y="2" width="28" height="28" rx="4" fill="#FFCC00" stroke="#996600" stroke-width="1.5"/>
+          <text x="16" y="23" text-anchor="middle" font-size="20" font-weight="bold" fill="#262626">!</text>
+        </svg>
+      </div>
+      <div class="alert-text" id="alert-message">Message</div>
+    </div>
+    <div class="alert-buttons">
+      <button class="os9-btn" id="alert-ok-btn">OK</button>
+    </div>
+  </div>
+
+  <!-- ==================== LOADING DIALOG ==================== -->
+  <div class="loading-dialog" id="loading-dialog">
+    <div class="title-bar">
+      <div class="window-btn" style="visibility:hidden"></div>
+      <div class="title-bar-stripes"></div>
+      <div class="title-bar-center">
+        <span>Connecting...</span>
+      </div>
+      <div class="title-bar-stripes"></div>
+      <div class="window-btn" style="visibility:hidden"></div>
+    </div>
+    <div class="loading-body">
+      <p>Opening Internet Explorer 5...</p>
+      <p class="loading-url">http://www.slopzone.com/home</p>
+      <div class="os9-progress">
+        <div class="os9-progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="loading-status" id="loading-status">Contacting host...</div>
+    </div>
+  </div>
+
+  <!-- ==================== BROWSER WINDOW ==================== -->
+  <div class="window hidden" id="browser-window" style="left: 60px; top: 50px; width: 680px; height: 520px;">
+    <!-- Title Bar -->
+    <div class="title-bar draggable-title" data-window="browser-window">
+      <div class="window-btn close-btn" data-close="browser-window"></div>
+      <div class="title-bar-stripes"></div>
+      <div class="title-bar-center">
+        <span>Internet Explorer 5 - SlopZone</span>
+      </div>
+      <div class="title-bar-stripes"></div>
+      <div class="window-btn zoom-btn"></div>
+      <div class="window-btn collapse-btn" style="margin-left: 2px;"></div>
+    </div>
+
+    <!-- Browser Toolbar -->
+    <div class="browser-toolbar">
+      <div class="browser-nav-btn" id="browser-back" title="Back">&#9664;</div>
+      <div class="browser-nav-btn" id="browser-forward" title="Forward">&#9654;</div>
+      <div class="browser-nav-btn" title="Reload">&#8635;</div>
+      <div class="browser-nav-btn" title="Home">&#8962;</div>
+      <span class="browser-url-label">Address:</span>
+      <input class="browser-url-bar" type="text" value="http://www.slopzone.com/home" readonly>
+    </div>
+
+    <!-- Browser Content (scrollable) -->
+    <div class="browser-content">
+      <div class="retro-site">
+        <!-- Header -->
+        <div class="retro-header">
+          <h1>SlopZone</h1>
+          <div class="tagline">Connect with your friends in cyberspace! &trade; Est. 1999</div>
+        </div>
+
+        <!-- Nav -->
+        <div class="retro-nav" id="retro-nav">
+          <a href="#" data-tab="home" class="active-tab">Home</a> <span class="sep">|</span>
+          <a href="#" data-tab="feed">Photo Feed</a> <span class="sep">|</span>
+          <a href="#">My Profile</a> <span class="sep">|</span>
+          <a href="#">Friends</a> <span class="sep">|</span>
+          <a href="#">Messages (3)</a> <span class="sep">|</span>
+          <a href="#">Chat Rooms</a> <span class="sep">|</span>
+          <a href="#">Help</a>
+        </div>
+
+        <!-- Marquee -->
+        <div class="retro-marquee">
+          <span class="scroll-text">*** Welcome back, TheChangeIsMe! You have 3 new messages and 2 friend requests! Check out the NEW chat rooms! ***</span>
+        </div>
+
+        <!-- Body: Home Tab -->
+        <div class="retro-body retro-home active" id="tab-home">
+          <!-- Sidebar -->
+          <div class="retro-sidebar">
+            <div class="retro-profile-card">
+              <div class="profile-pic"></div>
+              <div class="profile-name">TheChangeIsMe</div>
+              <div class="profile-status">~*Until all is 45*~</div>
+              <div style="margin-top:4px;">
+                <span style="color:#009900;font-weight:bold;">Online</span>
+              </div>
+            </div>
+
+            <h3>My Stats</h3>
+            <ul>
+              <li>Friends: <b>47</b></li>
+              <li>Posts: <b>312</b></li>
+              <li>Kudos: <b>89</b></li>
+              <li>Member since: <b>'99</b></li>
+            </ul>
+
+            <h3>Buddies Online</h3>
+            <ul>
+              <li><span class="online-dot"></span><a href="#">SurfGrl2001</a></li>
+              <li><span class="online-dot"></span><a href="#">SkaterBoi_X</a></li>
+              <li><span class="online-dot"></span><a href="#">MusicFan88</a></li>
+              <li><span class="offline-dot"></span><a href="#">DarkAngel_7</a></li>
+              <li><span class="offline-dot"></span><a href="#">TechWiz42</a></li>
+              <li><span class="offline-dot"></span><a href="#">~*Butterfly*~</a></li>
+            </ul>
+
+            <h3>Cool Links</h3>
+            <ul>
+              <li><a href="#">Free Cursors!</a></li>
+              <li><a href="#">MIDI Music</a></li>
+              <li><a href="#">Guestbook</a></li>
+              <li><a href="#">Web Awards</a></li>
+            </ul>
+
+            <div class="retro-webring">
+              <b>SlopZone WebRing</b><br>
+              <a href="#">&lt;&lt; Prev</a> |
+              <a href="#">Random</a> |
+              <a href="#">Next &gt;&gt;</a>
+            </div>
+          </div>
+
+          <!-- Main Content -->
+          <div class="retro-main">
+            <h3 style="font-family:'Comic Sans MS','Verdana',sans-serif;font-size:13px;color:#000066;margin:0 0 6px 0;">
+              <span class="retro-blink">*</span> My SlopZone Feed <span class="retro-blink">*</span>
+            </h3>
+
+            <hr class="retro-hr">
+
+            <!-- Post 1 -->
+            <div class="retro-post">
+              <div class="retro-post-header">
+                <div class="retro-avatar">B-)</div>
+                <div class="retro-post-meta">
+                  <div class="username"><a href="#">SkaterBoi_X</a></div>
+                  <div class="timestamp">Today at 2:31 PM EST</div>
+                </div>
+              </div>
+              <div class="retro-post-body">
+                just landed a kickflip at the park!! tony hawk pro skater 3 comes out this year whos hyped?!?! 🛹<br>
+                <span style="font-size:9px;color:#999;">mood: stoked // listening to: blink-182 - All The Small Things</span>
+              </div>
+              <div class="retro-post-actions">
+                <a href="#">Give Kudos (12)</a>
+                <a href="#">Reply (4)</a>
+                <a href="#">Forward to a Friend</a>
+              </div>
+            </div>
+
+            <!-- Post 2 -->
+            <div class="retro-post">
+              <div class="retro-post-header">
+                <div class="retro-avatar" style="background:#FFE0F0;">^_^</div>
+                <div class="retro-post-meta">
+                  <div class="username"><a href="#">SurfGrl2001</a></div>
+                  <div class="timestamp">Today at 1:15 PM EST</div>
+                </div>
+              </div>
+              <div class="retro-post-body">
+                Does anyone know how to make a <b>scrolling marquee</b> on their homepage?? I want to add one with glitter text!! Also check out my <a href="#">new profile layout</a> I worked on it ALL weekend<br>
+                <span style="font-size:9px;color:#999;">mood: creative // listening to: Destiny's Child - Survivor</span>
+              </div>
+              <div class="retro-post-actions">
+                <a href="#">Give Kudos (8)</a>
+                <a href="#">Reply (7)</a>
+                <a href="#">Forward to a Friend</a>
+              </div>
+            </div>
+
+            <!-- Post 3 -->
+            <div class="retro-post">
+              <div class="retro-post-header">
+                <div class="retro-avatar" style="background:#E0FFE0;">:P</div>
+                <div class="retro-post-meta">
+                  <div class="username"><a href="#">MusicFan88</a></div>
+                  <div class="timestamp">Today at 11:42 AM EST</div>
+                </div>
+              </div>
+              <div class="retro-post-body">
+                Has anyone tried Napster?? I downloaded like 200 songs this week lol. My mom is mad because the phone line was busy all night 😂<br>
+                <b>TOP 5 songs rn:</b><br>
+                1. Linkin Park - In The End<br>
+                2. Gorillaz - Clint Eastwood<br>
+                3. Crazy Town - Butterfly<br>
+                4. Outkast - Ms. Jackson<br>
+                5. Daft Punk - One More Time<br>
+                <span style="font-size:9px;color:#999;">mood: jammin' // listening to: ALL OF THE ABOVE</span>
+              </div>
+              <div class="retro-post-actions">
+                <a href="#">Give Kudos (23)</a>
+                <a href="#">Reply (11)</a>
+                <a href="#">Forward to a Friend</a>
+              </div>
+            </div>
+
+            <!-- Post 4 -->
+            <div class="retro-post">
+              <div class="retro-post-header">
+                <div class="retro-avatar" style="background:#333;color:#0f0;">></div>
+                <div class="retro-post-meta">
+                  <div class="username"><a href="#">TechWiz42</a></div>
+                  <div class="timestamp">Yesterday at 9:18 PM EST</div>
+                </div>
+              </div>
+              <div class="retro-post-body">
+                Just upgraded to Mac OS 9.2!! The Sherlock search is amazing. Also got my iMac DV to connect to AIM and SlopZone at the same time. Living in the FUTURE.<br>
+                <span style="font-size:9px;color:#999;">mood: nerdy // listening to: Moby - Porcelain</span>
+              </div>
+              <div class="retro-post-actions">
+                <a href="#">Give Kudos (5)</a>
+                <a href="#">Reply (3)</a>
+                <a href="#">Forward to a Friend</a>
+              </div>
+            </div>
+
+            <hr class="retro-hr">
+
+            <!-- Guestbook -->
+            <div class="retro-guestbook">
+              <h4>&#9997; Sign My Guestbook!</h4>
+              <p style="font-size:9px;font-family:Verdana,sans-serif;margin:0 0 4px 0;">Leave a message for TheChangeIsMe:</p>
+              <textarea placeholder="Type your message here... (max 500 chars)"></textarea>
+              <div style="margin-top:4px;">
+                <button class="retro-btn">Post Message</button>
+                <button class="retro-btn">Add Smiley :-)</button>
+              </div>
+            </div>
+
+            <!-- Badges -->
+            <div style="text-align:center;margin-top:6px;">
+              <span class="retro-badge">Best viewed with Internet Explorer 5.0</span>
+              <span class="retro-badge">800x600 resolution</span>
+              <span class="retro-badge">Made on a Mac</span>
+              <span class="retro-badge">HTML 4.0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Body: Photo Feed Tab -->
+        <div class="retro-feed" id="tab-feed">
+          <div style="padding:8px 12px;">
+            <h3 style="font-family:'Comic Sans MS','Verdana',sans-serif;font-size:13px;color:#000066;margin:0 0 8px 0;text-align:center;">
+              <span class="retro-blink">*</span> Photo Feed <span class="retro-blink">*</span>
+            </h3>
+            <hr class="retro-hr">
+
+            <!-- Feed Post 1 -->
+            <div class="feed-post">
+              <div class="feed-post-top">
+                <div class="feed-avatar">B-)</div>
+                <div class="feed-user-info">
+                  <div class="feed-username"><a href="#">CatDaddy_99</a></div>
+                  <div class="feed-time">27 min ago</div>
+                </div>
+                <button class="feed-follow-btn" data-user="CatDaddy_99">+ Follow</button>
+              </div>
+              <div class="feed-photo">
+                <img src="Slop_1.jpg" alt="Cat on tricycle" style="width:100%;display:block;">
+              </div>
+              <div class="feed-actions">
+                <button class="feed-like-btn" data-likes="2041"><span class="heart">&#9825;</span> <span class="like-count">2,041 likes</span></button>
+                <span class="feed-comment-count">187 comments</span>
+              </div>
+              <div class="feed-caption"><span class="cap-user">CatDaddy_99</span> sir Whiskers taking the kid to daycare and picking up dinner on the way home. this man does it ALL. father of the year tbh #catdad #hustleculture #providervibes</div>
+              <div class="feed-comments">
+                <div class="feed-comment"><span class="cmt-user">SurfGrl2001:</span> the baby has a PACIFIER im literally crying rn</div>
+                <div class="feed-comment"><span class="cmt-user">TechWiz42:</span> is that a whole fish in the basket lmaooo</div>
+              </div>
+              <div class="feed-show-more">View all 187 comments...</div>
+            </div>
+
+            <!-- Feed Post 2 -->
+            <div class="feed-post">
+              <div class="feed-post-top">
+                <div class="feed-avatar" style="background:#D0E8FF;">~</div>
+                <div class="feed-user-info">
+                  <div class="feed-username"><a href="#">DeepSeaTruth</a></div>
+                  <div class="feed-time">1 hour ago</div>
+                </div>
+                <button class="feed-follow-btn" data-user="DeepSeaTruth">+ Follow</button>
+              </div>
+              <div class="feed-photo">
+                <img src="Slop_2.jpg" alt="Underwater statue" style="width:100%;display:block;">
+              </div>
+              <div class="feed-actions">
+                <button class="feed-like-btn" data-likes="6789"><span class="heart">&#9825;</span> <span class="like-count">6,789 likes</span></button>
+                <span class="feed-comment-count">432 comments</span>
+              </div>
+              <div class="feed-caption"><span class="cap-user">DeepSeaTruth</span> they dont want you to see this. the ancient crustacean deity has been found off the coast of bermuda. the ocean holds secrets we are NOT ready for. share before they delete this #lobsterchrist #bermudatriangle #thetruthisunderwater</div>
+              <div class="feed-comments">
+                <div class="feed-comment"><span class="cmt-user">MusicFan88:</span> this is the most cursed image i have ever seen with my own two eyes</div>
+                <div class="feed-comment"><span class="cmt-user">~*Butterfly*~:</span> why does this feel illegal to look at</div>
+              </div>
+              <div class="feed-show-more">View all 432 comments...</div>
+            </div>
+
+            <!-- Feed Post 3 -->
+            <div class="feed-post">
+              <div class="feed-post-top">
+                <div class="feed-avatar" style="background:#E0FFE0;">:P</div>
+                <div class="feed-user-info">
+                  <div class="feed-username"><a href="#">FarmLifeAI</a></div>
+                  <div class="feed-time">2 hours ago</div>
+                </div>
+                <button class="feed-follow-btn" data-user="FarmLifeAI">+ Follow</button>
+              </div>
+              <div class="feed-photo">
+                <img src="Slop_3.jpg" alt="Farm life" style="width:100%;display:block;">
+              </div>
+              <div class="feed-actions">
+                <button class="feed-like-btn" data-likes="14203"><span class="heart">&#9825;</span> <span class="like-count">14,203 likes</span></button>
+                <span class="feed-comment-count">891 comments</span>
+              </div>
+              <div class="feed-caption"><span class="cap-user">FarmLifeAI</span> just a simple country girl living her best life with the sheep. nothing beats fresh air and good vibes. the countryside heals what the city breaks #farmlife #cottagecore #blessed #wholesome</div>
+              <div class="feed-comments">
+                <div class="feed-comment"><span class="cmt-user">SkaterBoi_X:</span> something about this picture feels... off. i cant explain it</div>
+                <div class="feed-comment"><span class="cmt-user">DarkAngel_7:</span> those sheep look TERRIFIED lol</div>
+              </div>
+              <div class="feed-show-more">View all 891 comments...</div>
+            </div>
+
+            <!-- Feed Post 4 -->
+            <div class="feed-post">
+              <div class="feed-post-top">
+                <div class="feed-avatar" style="background:#333;color:#0f0;">></div>
+                <div class="feed-user-info">
+                  <div class="feed-username"><a href="#">TechWiz42</a></div>
+                  <div class="feed-time">3 hours ago</div>
+                </div>
+                <button class="feed-follow-btn" data-user="TechWiz42">+ Follow</button>
+              </div>
+              <div class="feed-photo">
+                <img src="Slop_4.jpg" alt="Tech visionary" style="width:100%;display:block;">
+              </div>
+              <div class="feed-actions">
+                <button class="feed-like-btn" data-likes="892"><span class="heart">&#9825;</span> <span class="like-count">892 likes</span></button>
+                <span class="feed-comment-count">203 comments</span>
+              </div>
+              <div class="feed-caption"><span class="cap-user">TechWiz42</span> this man is about to either save the world or end it and honestly both outcomes seem equally likely at this point. that stare has seen the singularity and it stared back #techbro #futureishere #agi #whatdoeshesee</div>
+              <div class="feed-comments">
+                <div class="feed-comment"><span class="cmt-user">TheChangeIsMe:</span> he looks like hes loading a thought at 56k</div>
+                <div class="feed-comment"><span class="cmt-user">CatDaddy_99:</span> me when the pizza rolls are almost done</div>
+              </div>
+              <div class="feed-show-more">View all 203 comments...</div>
+            </div>
+
+            <!-- Feed Post 5 -->
+            <div class="feed-post">
+              <div class="feed-post-top">
+                <div class="feed-avatar" style="background:#FFE0E0;color:#CC0000;">!</div>
+                <div class="feed-user-info">
+                  <div class="feed-username"><a href="#">CircusFreak666</a></div>
+                  <div class="feed-time">5 hours ago</div>
+                </div>
+                <button class="feed-follow-btn" data-user="CircusFreak666">+ Follow</button>
+              </div>
+              <div class="feed-photo">
+                <img src="Slop_5.jpg" alt="Clown in mug" style="width:100%;display:block;">
+              </div>
+              <div class="feed-actions">
+                <button class="feed-like-btn" data-likes="1337"><span class="heart">&#9825;</span> <span class="like-count">1,337 likes</span></button>
+                <span class="feed-comment-count">256 comments</span>
+              </div>
+              <div class="feed-caption"><span class="cap-user">CircusFreak666</span> when someone asks how ur doing and u say "fine" but this is what it actually looks like inside. monday mornings be like. anyway who wants coffee #clownlife #existentialcoffee #sendhelp #honkhonk</div>
+              <div class="feed-comments">
+                <div class="feed-comment"><span class="cmt-user">~*Butterfly*~:</span> this is going to appear in my nightmares and i accept that</div>
+                <div class="feed-comment"><span class="cmt-user">MusicFan88:</span> the polka dots match his outfit im losing it</div>
+              </div>
+              <div class="feed-show-more">View all 256 comments...</div>
+            </div>
+
+            <!-- Feed Post 6 -->
+            <div class="feed-post">
+              <div class="feed-post-top">
+                <div class="feed-avatar" style="background:#E8E0F0;color:#660099;">*</div>
+                <div class="feed-user-info">
+                  <div class="feed-username"><a href="#">PuppetMaster_X</a></div>
+                  <div class="feed-time">7 hours ago</div>
+                </div>
+                <button class="feed-follow-btn" data-user="PuppetMaster_X">+ Follow</button>
+              </div>
+              <div class="feed-photo">
+                <img src="Slop_6.jpg" alt="Blue character" style="width:100%;display:block;">
+              </div>
+              <div class="feed-actions">
+                <button class="feed-like-btn" data-likes="504"><span class="heart">&#9825;</span> <span class="like-count">504 likes</span></button>
+                <span class="feed-comment-count">78 comments</span>
+              </div>
+              <div class="feed-caption"><span class="cap-user">PuppetMaster_X</span> he knows what you did last summer. he knows what you did ALL the summers. that smile has witnessed civilizations rise and fall and hes still vibing. absolute legend #cursed #nostalgia #90skids #whyisheblue</div>
+              <div class="feed-comments">
+                <div class="feed-comment"><span class="cmt-user">SurfGrl2001:</span> i remember this guy!! he used to scare me SO bad as a kid omg</div>
+                <div class="feed-comment"><span class="cmt-user">DarkAngel_7:</span> this energy is immaculate honestly</div>
+              </div>
+              <div class="feed-show-more">View all 78 comments...</div>
+            </div>
+
+            <!-- Feed Post 7 -->
+            <div class="feed-post">
+              <div class="feed-post-top">
+                <div class="feed-avatar" style="background:#FFD700;color:#8B0000;">!</div>
+                <div class="feed-user-info">
+                  <div class="feed-username"><a href="#">EaglePatriot1776</a></div>
+                  <div class="feed-time">9 hours ago</div>
+                </div>
+                <button class="feed-follow-btn" data-user="EaglePatriot1776">+ Follow</button>
+              </div>
+              <div class="feed-photo">
+                <img src="Slop_7.jpg" alt="Epic scene" style="width:100%;display:block;">
+              </div>
+              <div class="feed-actions">
+                <button class="feed-like-btn" data-likes="45210"><span class="heart">&#9825;</span> <span class="like-count">45,210 likes</span></button>
+                <span class="feed-comment-count">8,432 comments</span>
+              </div>
+              <div class="feed-caption"><span class="cap-user">EaglePatriot1776</span> if this doesnt give u goosebumps u might not have a pulse. they should put this in every history book from now until forever. the eagles are a nice touch too. grandma shared this 47 times already #epic #majestic #lionking #aiart</div>
+              <div class="feed-comments">
+                <div class="feed-comment"><span class="cmt-user">TechWiz42:</span> u can literally see the watermark from the AI site in the corner lol</div>
+                <div class="feed-comment"><span class="cmt-user">SkaterBoi_X:</span> why does the lion look sad tho</div>
+              </div>
+              <div class="feed-show-more">View all 8,432 comments...</div>
+            </div>
+
+            <!-- Feed Post 8 -->
+            <div class="feed-post">
+              <div class="feed-post-top">
+                <div class="feed-avatar" style="background:#FFE0F0;">^_^</div>
+                <div class="feed-user-info">
+                  <div class="feed-username"><a href="#">FreshPrinceFan</a></div>
+                  <div class="feed-time">12 hours ago</div>
+                </div>
+                <button class="feed-follow-btn" data-user="FreshPrinceFan">+ Follow</button>
+              </div>
+              <div class="feed-photo">
+                <img src="Slop_8.jpg" alt="Concert sign" style="width:100%;display:block;">
+              </div>
+              <div class="feed-actions">
+                <button class="feed-like-btn" data-likes="3287"><span class="heart">&#9825;</span> <span class="like-count">3,287 likes</span></button>
+                <span class="feed-comment-count">341 comments</span>
+              </div>
+              <div class="feed-caption"><span class="cap-user">FreshPrinceFan</span> LOV U FRESH PRINT. they made a sign and everything. this is what real dedication looks like. the fresh prince fandom never dies it only gets stronger. who else grew up on this show?? #freshprince #willsmith #belairforever #90s</div>
+              <div class="feed-comments">
+                <div class="feed-comment"><span class="cmt-user">TheChangeIsMe:</span> PRINT lmaooo they tried so hard and thats what matters</div>
+                <div class="feed-comment"><span class="cmt-user">MusicFan88:</span> the heart drawing is sending me</div>
+              </div>
+              <div class="feed-show-more">View all 341 comments...</div>
+            </div>
+
+            <!-- Feed Post 9 -->
+            <div class="feed-post">
+              <div class="feed-post-top">
+                <div class="feed-avatar" style="background:#FFFACD;color:#8B6914;">?</div>
+                <div class="feed-user-info">
+                  <div class="feed-username"><a href="#">PokeSlop_Daily</a></div>
+                  <div class="feed-time">Yesterday</div>
+                </div>
+                <button class="feed-follow-btn" data-user="PokeSlop_Daily">+ Follow</button>
+              </div>
+              <div class="feed-photo">
+                <img src="Slop_9.jpg" alt="Creature" style="width:100%;display:block;">
+              </div>
+              <div class="feed-actions">
+                <button class="feed-like-btn" data-likes="7654"><span class="heart">&#9825;</span> <span class="like-count">7,654 likes</span></button>
+                <span class="feed-comment-count">512 comments</span>
+              </div>
+              <div class="feed-caption"><span class="cap-user">PokeSlop_Daily</span> new pokemon just dropped?? this little guy is giving platypus meets beaver meets dragon and honestly hes my whole personality now. i would protect him with my life. look at that belly #pokemon #fakemon #hedgehogcore #adoptdontshop</div>
+              <div class="feed-comments">
+                <div class="feed-comment"><span class="cmt-user">CatDaddy_99:</span> he looks like he just remembered he left the oven on</div>
+                <div class="feed-comment"><span class="cmt-user">~*Butterfly*~:</span> the CLAWS omg what type is he?? water/ground??</div>
+              </div>
+              <div class="feed-show-more">View all 512 comments...</div>
+            </div>
+
+            <!-- Feed Post 10 -->
+            <div class="feed-post">
+              <div class="feed-post-top">
+                <div class="feed-avatar" style="background:#FFD4B8;">:D</div>
+                <div class="feed-user-info">
+                  <div class="feed-username"><a href="#">MonkeyBusiness</a></div>
+                  <div class="feed-time">2 days ago</div>
+                </div>
+                <button class="feed-follow-btn" data-user="MonkeyBusiness">+ Follow</button>
+              </div>
+              <div class="feed-photo">
+                <img src="Slop_10.jpg" alt="Monkey selfie" style="width:100%;display:block;">
+              </div>
+              <div class="feed-actions">
+                <button class="feed-like-btn" data-likes="9102"><span class="heart">&#9825;</span> <span class="like-count">9,102 likes</span></button>
+                <span class="feed-comment-count">674 comments</span>
+              </div>
+              <div class="feed-caption"><span class="cap-user">MonkeyBusiness</span> airport selfie!! first class baby. they said i couldnt fly but they never said anything about BOOKING THE FLIGHT MYSELF. vacation mode activated. see u losers later im going to bali #jetset #monkeytravel #firstclass #livingmybestlife</div>
+              <div class="feed-comments">
+                <div class="feed-comment"><span class="cmt-user">SurfGrl2001:</span> his outfit is better than anything in my closet and im not even mad</div>
+                <div class="feed-comment"><span class="cmt-user">SkaterBoi_X:</span> this monkey has a better life than me and i need to sit with that for a minute</div>
+              </div>
+              <div class="feed-show-more">View all 674 comments...</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Follow Confirmation Popup -->
+        <div id="follow-confirm">
+          <div id="follow-confirm-bg"></div>
+          <div id="follow-confirm-box">
+            <div class="title-bar" style="cursor:default;">
+              <div class="window-btn" style="visibility:hidden"></div>
+              <div class="title-bar-stripes"></div>
+              <div class="title-bar-center"><span>Confirm</span></div>
+              <div class="title-bar-stripes"></div>
+              <div class="window-btn" style="visibility:hidden"></div>
+            </div>
+            <div class="follow-confirm-body">
+              <div class="follow-confirm-icon">
+                <svg viewBox="0 0 32 32">
+                  <circle cx="16" cy="12" r="6" fill="#6666CC" stroke="#333366" stroke-width="1"/>
+                  <path d="M6 28 C6 20 10 18 16 18 C22 18 26 20 26 28" fill="#6666CC" stroke="#333366" stroke-width="1"/>
+                  <circle cx="24" cy="10" r="4" fill="#00CC00" stroke="#006600" stroke-width="0.8"/>
+                  <text x="24" y="12.5" text-anchor="middle" font-size="6" fill="white" font-weight="bold">+</text>
+                </svg>
+              </div>
+              <div class="follow-confirm-text" id="follow-confirm-text">
+                Are you sure you want to subscribe to <b>username</b>'s updates? You will receive email notifications for new posts.
+              </div>
+            </div>
+            <div class="follow-confirm-buttons">
+              <button class="os9-btn" id="follow-cancel-btn">Cancel</button>
+              <button class="os9-btn" id="follow-ok-btn" style="font-weight:bold;">Subscribe</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="retro-footer">
+          <div>&copy; 2001 SlopZone Inc. All rights reserved. | <a href="#" style="font-size:8px;">Terms of Service</a> | <a href="#" style="font-size:8px;">Privacy Policy</a> | <a href="#" style="font-size:8px;">Contact Webmaster</a></div>
+          <div>You are visitor #<span class="hit-counter" id="hit-counter">004,721</span></div>
+          <div style="margin-top:3px;">
+            <span class="retro-badge">Netscape Now!</span>
+            <span class="retro-badge">GeoCities</span>
+            <span class="retro-badge">This site is Y2K compliant</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar with resize -->
+    <div class="window-bottom">
+      <div style="flex:1;height:16px;background:var(--gray-300);border:1px solid var(--black);"></div>
+      <div class="resize-handle"></div>
+    </div>
+    <div class="window-spacer"></div>
+  </div>
+
+  <!-- Drag outlines -->
+  <div id="window-drag-outline"></div>
+  <div id="icon-drag-ghost"></div>
+
+  <!-- ==================== CONTROL STRIP ==================== -->
+  <div id="control-strip">
+    <!-- Close box -->
+    <div class="cs-close-btn" id="cs-close" title="Collapse strip"><div class="cs-x"></div></div>
+    <!-- Left scroll arrow -->
+    <div class="cs-nav-btn" id="cs-nav-left" title="Scroll left">&#9664;</div>
+    <!-- App buttons with popup menus -->
+    <div class="cs-app-btn" data-cs="appletalk" title="AppleTalk">
+      <img src="cs-appletalk.png" alt="AppleTalk">
+      <span class="cs-arrow">&#9660;</span>
+      <div class="cs-popup">
+        <div class="cs-popup-item checked">AppleTalk Active</div>
+        <div class="cs-popup-sep"></div>
+        <div class="cs-popup-item disabled">AppleTalk Inactive</div>
+      </div>
+    </div>
+    <div class="cs-app-btn" data-cs="cd" title="CD">
+      <img src="cs-cd.png" alt="CD">
+      <span class="cs-arrow">&#9660;</span>
+      <div class="cs-popup">
+        <div class="cs-popup-item checked">ATAPI</div>
+        <div class="cs-popup-sep"></div>
+        <div class="cs-popup-item">AutoPlay</div>
+        <div class="cs-popup-item disabled">Repeat</div>
+        <div class="cs-popup-item disabled">Normal</div>
+        <div class="cs-popup-item selected">3D Stereo</div>
+        <div class="cs-popup-sep"></div>
+        <div class="cs-popup-item">Play</div>
+        <div class="cs-popup-item">Skip Track</div>
+        <div class="cs-popup-item">Back Track</div>
+        <div class="cs-popup-item">Stop</div>
+        <div class="cs-popup-item">Eject</div>
+      </div>
+    </div>
+    <div class="cs-app-btn" data-cs="itunes" title="iTunes">
+      <img src="cs-itunes.png" alt="iTunes">
+      <span class="cs-arrow">&#9660;</span>
+      <div class="cs-popup">
+        <div class="cs-popup-item">Play</div>
+        <div class="cs-popup-item">Pause</div>
+        <div class="cs-popup-item">Stop</div>
+        <div class="cs-popup-sep"></div>
+        <div class="cs-popup-item">Next Track</div>
+        <div class="cs-popup-item">Previous Track</div>
+        <div class="cs-popup-sep"></div>
+        <div class="cs-popup-item checked">Shuffle</div>
+        <div class="cs-popup-item">Repeat All</div>
+      </div>
+    </div>
+    <div class="cs-app-btn" data-cs="keychain" title="Keychain">
+      <img src="cs-keychain.png" alt="Keychain">
+      <span class="cs-arrow">&#9660;</span>
+      <div class="cs-popup">
+        <div class="cs-popup-item">Lock Keychain</div>
+        <div class="cs-popup-item">Unlock Keychain</div>
+        <div class="cs-popup-sep"></div>
+        <div class="cs-popup-item checked">Keychain Access</div>
+      </div>
+    </div>
+    <div class="cs-app-btn" data-cs="monitor-depth" title="Monitor BitDepth">
+      <img src="cs-monitor-depth.png" alt="Monitor BitDepth">
+      <span class="cs-arrow">&#9660;</span>
+      <div class="cs-popup">
+        <div class="cs-popup-item">256 Colors</div>
+        <div class="cs-popup-item checked">Thousands</div>
+        <div class="cs-popup-item">Millions</div>
+      </div>
+    </div>
+    <div class="cs-app-btn" data-cs="remote" title="Remote Access">
+      <img src="cs-remote.png" alt="Remote Access">
+      <span class="cs-arrow">&#9660;</span>
+      <div class="cs-popup">
+        <div class="cs-popup-item">Connect</div>
+        <div class="cs-popup-item disabled">Disconnect</div>
+        <div class="cs-popup-sep"></div>
+        <div class="cs-popup-item checked">Show Status</div>
+      </div>
+    </div>
+    <div class="cs-app-btn" data-cs="monitor-res" title="Monitor Resolution">
+      <img src="cs-monitor-res.png" alt="Monitor Resolution">
+      <span class="cs-arrow">&#9660;</span>
+      <div class="cs-popup">
+        <div class="cs-popup-item">640 x 480</div>
+        <div class="cs-popup-item">800 x 600</div>
+        <div class="cs-popup-item checked">1024 x 768</div>
+        <div class="cs-popup-item">1152 x 870</div>
+        <div class="cs-popup-item">1280 x 1024</div>
+      </div>
+    </div>
+    <div class="cs-app-btn" data-cs="printer" title="Printer">
+      <img src="cs-printer.png" alt="Printer">
+      <span class="cs-arrow">&#9660;</span>
+      <div class="cs-popup">
+        <div class="cs-popup-item checked">LaserWriter 300</div>
+        <div class="cs-popup-item">StyleWriter 2500</div>
+        <div class="cs-popup-sep"></div>
+        <div class="cs-popup-item">Page Setup...</div>
+      </div>
+    </div>
+    <div class="cs-app-btn" data-cs="sound" title="Sound Volume" style="position:relative">
+      <img src="cs-sound.png" alt="Sound">
+      <span class="cs-arrow">&#9660;</span>
+      <div class="cs-volume-popup" id="cs-volume-popup">
+        <div class="cs-volume-track">
+          <div class="cs-volume-thumb" id="cs-volume-thumb" style="top:30%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cs-app-btn" data-cs="websharing" title="Web Sharing">
+      <img src="cs-websharing.png" alt="Web Sharing">
+      <span class="cs-arrow">&#9660;</span>
+      <div class="cs-popup">
+        <div class="cs-popup-item checked">Web Sharing On</div>
+        <div class="cs-popup-item">Web Sharing Off</div>
+        <div class="cs-popup-sep"></div>
+        <div class="cs-popup-item disabled">Open Web Folder</div>
+      </div>
+    </div>
+    <!-- Right scroll arrow -->
+    <div class="cs-nav-btn" id="cs-nav-right" title="Scroll right">&#9654;</div>
+    <!-- Expand controller -->
+    <div class="cs-expand" id="cs-expand" title="Expand strip">&#9650;</div>
+  </div>
+</div>
+
+<!-- ==================== VIRUS OVERLAY ==================== -->
+<div id="virus-overlay"></div>
+
+<script>
+  // ==================== CLOCK ====================
+  function updateClock() {
+    const now = new Date();
+    let h = now.getHours();
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    document.getElementById('menu-clock').textContent = h + ':' + m + ' ' + ampm;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // ==================== DROPDOWN MENUS ====================
+  var activeMenu = null;
+
+  var menuTriggerSelector = '[data-menu]';
+
+  function closeAllMenus() {
+    document.querySelectorAll('.dropdown-menu').forEach(function(m) {
+      m.classList.remove('visible');
+    });
+    document.querySelectorAll(menuTriggerSelector).forEach(function(mi) {
+      mi.classList.remove('active');
+    });
+    activeMenu = null;
+  }
+
+  document.querySelectorAll('#menubar > ' + menuTriggerSelector).forEach(function(item) {
+    item.addEventListener('mousedown', function(e) {
+      e.stopPropagation();
+      var menuId = 'menu-' + item.getAttribute('data-menu');
+      var dropdown = document.getElementById(menuId);
+
+      if (activeMenu === menuId) {
+        closeAllMenus();
+        return;
+      }
+
+      closeAllMenus();
+      dropdown.classList.add('visible');
+      item.classList.add('active');
+      activeMenu = menuId;
+    });
+
+    item.addEventListener('mouseenter', function() {
+      if (activeMenu) {
+        closeAllMenus();
+        var menuId = 'menu-' + item.getAttribute('data-menu');
+        var dropdown = document.getElementById(menuId);
+        dropdown.classList.add('visible');
+        item.classList.add('active');
+        activeMenu = menuId;
+      }
+    });
+  });
+
+  // Close menus when clicking outside
+  document.addEventListener('mousedown', function(e) {
+    if (activeMenu && !e.target.closest('#menubar > ' + menuTriggerSelector)) {
+      closeAllMenus();
+    }
+  });
+
+  // Dropdown item actions
+  document.querySelectorAll('.dropdown-item:not(.disabled)').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var text = item.childNodes[0].textContent.trim();
+      closeAllMenus();
+
+      if (text === 'About This Computer') {
+        showAlert('About This Computer', 'Mac OS 9.2.2\nMemory: 256 MB\nVirtual Memory: 512 MB\nBuilt-in Memory: 256 MB');
+      } else if (text === 'Close Window') {
+        var w = document.querySelector('.window:not([style*="display: none"])');
+        if (w) w.style.display = 'none';
+      } else if (text === 'Empty Trash...') {
+        showAlert('Trash', 'The trash is empty.');
+      } else if (text === 'Shut Down') {
+        document.getElementById('desktop').style.background = '#000';
+        document.getElementById('desktop').innerHTML = '';
+      } else if (text === 'Restart') {
+        location.reload();
+      } else if (text === 'Sleep') {
+        document.getElementById('desktop').style.filter = 'brightness(0)';
+        document.addEventListener('click', function wake() {
+          document.getElementById('desktop').style.filter = '';
+          document.removeEventListener('click', wake);
+        });
+      } else if (text === 'About Balloon Help...') {
+        showAlert('Balloon Help', 'Balloon Help displays explanations of items on the screen.');
+      } else if (text === 'Mac Help') {
+        showAlert('Mac Help', 'Mac Help is not available.');
+      } else if (text === 'Find...') {
+        showAlert('Sherlock 2', 'Sherlock 2 is not available.');
+      } else if (text === 'Calculator') {
+        showAlert('Calculator', 'Calculator is not available.');
+      } else if (text === 'New Folder') {
+        showAlert('New Folder', 'A new folder cannot be created here.');
+      } else if (text === 'Preferences...') {
+        showAlert('Preferences', 'Preferences are not available.');
+      } else if (text === 'View Options...') {
+        showAlert('View Options', 'View Options are not available.');
+      }
+    });
+  });
+
+  // ==================== SHARED STATE ====================
+  const dragOutline = document.getElementById('window-drag-outline');
+  const iconDragGhost = document.getElementById('icon-drag-ghost');
+  const desktop = document.getElementById('desktop');
+  let topZ = 100;
+
+  function bringToFront(win) {
+    topZ++;
+    win.style.zIndex = topZ;
+  }
+
+  // ==================== GENERIC WINDOW DRAGGING (outline mode) ====================
+  let winDrag = { active: false, win: null, offsetX: 0, offsetY: 0 };
+
+  document.querySelectorAll('.draggable-title').forEach(function(titleBar) {
+    titleBar.addEventListener('mousedown', function(e) {
+      if (e.target.closest('.window-btn')) return;
+      e.preventDefault();
+
+      var winId = titleBar.getAttribute('data-window');
+      var win = document.getElementById(winId);
+      bringToFront(win);
+
+      var rect = win.getBoundingClientRect();
+      var desktopRect = desktop.getBoundingClientRect();
+
+      winDrag.active = true;
+      winDrag.win = win;
+      winDrag.offsetX = e.clientX - rect.left;
+      winDrag.offsetY = e.clientY - rect.top;
+
+      dragOutline.style.left = (rect.left - desktopRect.left) + 'px';
+      dragOutline.style.top = (rect.top - desktopRect.top) + 'px';
+      dragOutline.style.width = rect.width + 'px';
+      dragOutline.style.height = rect.height + 'px';
+      dragOutline.style.display = 'block';
+      win.classList.add('is-dragging');
+    });
+  });
+
+  // ==================== WINDOW RESIZING ====================
+  let winResize = { active: false, win: null, startX: 0, startY: 0, startW: 0, startH: 0 };
+
+  document.querySelectorAll('.resize-handle').forEach(function(handle) {
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var win = handle.closest('.window');
+      bringToFront(win);
+      winResize.active = true;
+      winResize.win = win;
+      winResize.startX = e.clientX;
+      winResize.startY = e.clientY;
+      winResize.startW = win.offsetWidth;
+      winResize.startH = win.offsetHeight;
+    });
+  });
+
+  // ==================== CLOSE BUTTONS ====================
+  document.querySelectorAll('[data-close]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var winId = btn.getAttribute('data-close');
+      document.getElementById(winId).classList.add('hidden');
+    });
+  });
+
+  // ==================== BRING WINDOW TO FRONT ON CLICK ====================
+  document.querySelectorAll('.window').forEach(function(win) {
+    win.addEventListener('mousedown', function() {
+      bringToFront(win);
+    });
+  });
+
+  // ==================== OPEN WINDOWS ====================
+  function openWindow(id) {
+    var win = document.getElementById(id);
+    win.classList.remove('hidden');
+    bringToFront(win);
+  }
+
+  // ==================== ICON SELECTION ====================
+  function clearSelections() {
+    document.querySelectorAll('.desktop-icon, .folder-icon').forEach(function(el) {
+      el.classList.remove('selected');
+    });
+  }
+
+  document.querySelectorAll('.folder-icon').forEach(function(icon) {
+    icon.addEventListener('mousedown', function(e) {
+      e.stopPropagation();
+      clearSelections();
+      icon.classList.add('selected');
+    });
+  });
+
+  // ==================== DRAGGABLE DESKTOP ICONS ====================
+  let iconDrag = { active: false, icon: null, offsetX: 0, offsetY: 0, startX: 0, startY: 0, moved: false };
+  const DRAG_THRESHOLD = 4;
+
+  document.querySelectorAll('.desktop-icon').forEach(function(icon) {
+    icon.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      clearSelections();
+      icon.classList.add('selected');
+
+      var rect = icon.getBoundingClientRect();
+      iconDrag.active = true;
+      iconDrag.icon = icon;
+      iconDrag.startX = e.clientX;
+      iconDrag.startY = e.clientY;
+      iconDrag.offsetX = e.clientX - rect.left;
+      iconDrag.offsetY = e.clientY - rect.top;
+      iconDrag.moved = false;
+    });
+  });
+
+  // ==================== UNIFIED MOUSEMOVE / MOUSEUP ====================
+  document.addEventListener('mousemove', function(e) {
+    if (winDrag.active) {
+      var dr = desktop.getBoundingClientRect();
+      dragOutline.style.left = (e.clientX - winDrag.offsetX - dr.left) + 'px';
+      dragOutline.style.top = (e.clientY - winDrag.offsetY - dr.top) + 'px';
+    } else if (winResize.active) {
+      winResize.win.style.width = Math.max(300, winResize.startW + (e.clientX - winResize.startX)) + 'px';
+      winResize.win.style.height = Math.max(200, winResize.startH + (e.clientY - winResize.startY)) + 'px';
+    } else if (iconDrag.active) {
+      var dx = e.clientX - iconDrag.startX;
+      var dy = e.clientY - iconDrag.startY;
+      if (!iconDrag.moved && Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+      if (!iconDrag.moved) {
+        iconDrag.moved = true;
+        iconDrag.icon.classList.add('is-dragging');
+        iconDragGhost.innerHTML = iconDrag.icon.innerHTML;
+        iconDragGhost.style.width = iconDrag.icon.offsetWidth + 'px';
+        iconDragGhost.style.display = 'flex';
+        iconDragGhost.style.flexDirection = 'column';
+        iconDragGhost.style.alignItems = 'center';
+      }
+      var dr2 = desktop.getBoundingClientRect();
+      iconDragGhost.style.left = (e.clientX - iconDrag.offsetX - dr2.left) + 'px';
+      iconDragGhost.style.top = (e.clientY - iconDrag.offsetY - dr2.top) + 'px';
+    }
+  });
+
+  document.addEventListener('mouseup', function(e) {
+    if (winDrag.active) {
+      winDrag.win.style.left = dragOutline.style.left;
+      winDrag.win.style.top = dragOutline.style.top;
+      dragOutline.style.display = 'none';
+      winDrag.win.classList.remove('is-dragging');
+      winDrag.active = false;
+      winDrag.win = null;
+    } else if (winResize.active) {
+      winResize.active = false;
+      winResize.win = null;
+    } else if (iconDrag.active) {
+      if (iconDrag.moved) {
+        var dr = desktop.getBoundingClientRect();
+        var icon = iconDrag.icon;
+        icon.style.right = 'auto';
+        icon.style.bottom = 'auto';
+        icon.style.left = (e.clientX - iconDrag.offsetX - dr.left) + 'px';
+        icon.style.top = (e.clientY - iconDrag.offsetY - dr.top) + 'px';
+        icon.classList.remove('is-dragging');
+        iconDragGhost.style.display = 'none';
+        iconDragGhost.innerHTML = '';
+      }
+      iconDrag.active = false;
+      iconDrag.icon = null;
+      iconDrag.moved = false;
+    }
+  });
+
+  // Click desktop to deselect all
+  desktop.addEventListener('mousedown', function(e) {
+    if (!e.target.closest('.desktop-icon') && !e.target.closest('.window') && !e.target.closest('#control-strip')) {
+      clearSelections();
+    }
+  });
+
+  // ==================== OS9 ALERT ====================
+  function showAlert(title, message) {
+    document.getElementById('alert-title').textContent = title;
+    document.getElementById('alert-message').textContent = message;
+    document.getElementById('os9-alert').classList.add('visible');
+  }
+
+  document.getElementById('alert-ok-btn').addEventListener('click', function() {
+    document.getElementById('os9-alert').classList.remove('visible');
+  });
+
+  // ==================== FINDER NAVIGATION ====================
+  var finderHistory = [];
+  var folderContents = {
+    'Mac OS 45 HD': {
+      items: ['Apple Extras', 'Applications', 'Assistants', 'Documents', 'Internet', 'System Folder', 'Utilities'],
+      status: '7 items, 12.44 GB available'
+    },
+    'Apple Extras': {
+      items: ['AppleScript', 'Mac OS Runtime for Java'],
+      status: '2 items, 12.44 GB available'
+    },
+    'Applications': {
+      items: ['Internet Explorer 5', 'SimpleText', 'Stickies', 'Calculator', 'Sherlock 2'],
+      status: '5 items, 12.44 GB available'
+    },
+    'Assistants': {
+      items: ['Internet Setup Assistant', 'Mac OS Setup Assistant'],
+      status: '2 items, 12.44 GB available'
+    },
+    'Documents': {
+      items: ['ReadMe.txt', 'About This Mac.txt'],
+      status: '2 items, 12.44 GB available'
+    },
+    'Internet': {
+      items: ['Internet Explorer 5', 'Outlook Express', 'Netscape Communicator'],
+      status: '3 items, 12.44 GB available'
+    },
+    'System Folder': {
+      items: ['Appearance', 'Apple Menu Items', 'Control Panels', 'Extensions', 'Fonts', 'Preferences'],
+      status: '6 items, 12.44 GB available'
+    },
+    'Utilities': {
+      items: ['Disk Utility', 'Disk First Aid', 'Drive Setup', 'Apple System Profiler'],
+      status: '4 items, 12.44 GB available'
+    }
+  };
+
+  function makeFolderSvg() {
+    return '<svg viewBox="0 0 40 32" class="svg-folder"><path d="M2 6 L16 6 L18 2 L2 2 Z" fill="#8888DD" stroke="#555" stroke-width="0.5"/><rect x="2" y="6" width="36" height="24" rx="2" fill="#9999EE" stroke="#555" stroke-width="0.5"/><rect x="4" y="8" width="32" height="20" rx="1" fill="#AAAAFF"/></svg>';
+  }
+
+  function makeFileSvg() {
+    return '<svg viewBox="0 0 32 40" style="width:32px;height:40px"><rect x="2" y="2" width="24" height="36" rx="1" fill="#fff" stroke="#666" stroke-width="1"/><path d="M20 2 L26 8 L20 8 Z" fill="#ddd" stroke="#666" stroke-width="0.5"/><line x1="6" y1="14" x2="22" y2="14" stroke="#ccc" stroke-width="0.8"/><line x1="6" y1="18" x2="22" y2="18" stroke="#ccc" stroke-width="0.8"/><line x1="6" y1="22" x2="18" y2="22" stroke="#ccc" stroke-width="0.8"/></svg>';
+  }
+
+  function updateBackButton() {
+    document.getElementById('finder-back-btn').classList.toggle('disabled', finderHistory.length === 0);
+  }
+
+  function navigateFolder(name) {
+    var folder = folderContents[name];
+    if (!folder) {
+      showAlert(name, 'This folder is empty.');
+      return;
+    }
+
+    finderHistory.push(document.querySelector('#finder-window .title-bar-center span').textContent);
+
+    // Update title
+    document.querySelector('#finder-window .title-bar-center span').textContent = name;
+
+    // Update status
+    document.querySelector('#finder-window .status-bar span').textContent = folder.status;
+
+    // Update content
+    var contentArea = document.getElementById('content-area');
+    contentArea.innerHTML = '';
+
+    folder.items.forEach(function(item) {
+      var isFolder = folderContents[item];
+      var div = document.createElement('div');
+      div.className = 'folder-icon';
+      div.innerHTML =
+        '<div class="icon-img">' + (isFolder ? makeFolderSvg() : makeFileSvg()) + '</div>' +
+        '<span class="icon-label">' + item + '</span>';
+
+      div.addEventListener('mousedown', function(e) {
+        e.stopPropagation();
+        clearSelections();
+        div.classList.add('selected');
+      });
+
+      if (isFolder) {
+        div.addEventListener('dblclick', function() { navigateFolder(item); });
+      } else {
+        div.addEventListener('dblclick', function() {
+          showAlert(item, 'The file "' + item + '" could not be opened. The application is not available.');
+        });
+      }
+
+      contentArea.appendChild(div);
+    });
+
+    updateBackButton();
+  }
+
+  // Attach double-click to initial folder icons
+  document.querySelectorAll('#content-area .folder-icon').forEach(function(icon) {
+    var name = icon.querySelector('.icon-label').textContent;
+    icon.addEventListener('dblclick', function() { navigateFolder(name); });
+  });
+
+  // Back navigation via title bar center click
+  document.querySelector('#finder-window .title-bar-center').addEventListener('dblclick', function() {
+    goBack();
+  });
+
+  // Back button click
+  document.getElementById('finder-back-btn').addEventListener('click', goBack);
+
+  function goBack() {
+    if (finderHistory.length > 0) {
+      var prev = finderHistory.pop();
+      navigateFolder(prev);
+      finderHistory.pop(); // navigateFolder pushes, so undo that
+      updateBackButton();
+    }
+  }
+
+  // ==================== DOUBLE-CLICK ACTIONS ====================
+  document.getElementById('icon-hd').addEventListener('dblclick', function() { openWindow('finder-window'); });
+  document.getElementById('icon-internet').addEventListener('dblclick', function() { openBrowser(); });
+
+  document.getElementById('icon-shared').addEventListener('dblclick', function() {
+    showAlert('Shared Folder', 'File sharing is not enabled. To share files, enable File Sharing in the control panel.');
+  });
+
+  document.getElementById('icon-trash').addEventListener('dblclick', function() {
+    showAlert('Trash', 'The trash is empty.');
+  });
+
+  // ==================== BROWSER LOADING SEQUENCE ====================
+  var browserLoading = false;
+  var loadingSteps = [
+    { pct: 8,   text: 'Contacting host...' },
+    { pct: 15,  text: 'Looking up www.slopzone.com...' },
+    { pct: 25,  text: 'Host contacted. Waiting for reply...' },
+    { pct: 35,  text: 'Connected to www.slopzone.com' },
+    { pct: 45,  text: 'Transferring data from www.slopzone.com...' },
+    { pct: 55,  text: 'Reading data... (2 of 14 items)' },
+    { pct: 65,  text: 'Reading data... (7 of 14 items)' },
+    { pct: 75,  text: 'Reading data... (11 of 14 items)' },
+    { pct: 85,  text: 'Formatting page...' },
+    { pct: 92,  text: 'Loading images...' },
+    { pct: 100, text: 'Document: Done.' },
+  ];
+
+  function openBrowser() {
+    if (browserLoading) return;
+    var browserWin = document.getElementById('browser-window');
+    // If browser already open, just bring to front
+    if (!browserWin.classList.contains('hidden')) {
+      bringToFront(browserWin);
+      return;
+    }
+
+    browserLoading = true;
+    var dialog = document.getElementById('loading-dialog');
+    var fill = document.getElementById('progress-fill');
+    var status = document.getElementById('loading-status');
+
+    fill.style.width = '0%';
+    status.textContent = 'Contacting host...';
+    dialog.classList.add('visible');
+
+    var step = 0;
+    function nextStep() {
+      if (step >= loadingSteps.length) {
+        dialog.classList.remove('visible');
+        openWindow('browser-window');
+        browserLoading = false;
+        return;
+      }
+      var s = loadingSteps[step];
+      fill.style.width = s.pct + '%';
+      status.textContent = s.text;
+      step++;
+      setTimeout(nextStep, 200 + Math.random() * 400);
+    }
+    setTimeout(nextStep, 300);
+  }
+
+  // ==================== FRIENDZONE TAB SWITCHING ====================
+  function switchBrowserTab(tab) {
+    // Update active tab style
+    document.querySelectorAll('#retro-nav a[data-tab]').forEach(function(a) {
+      a.classList.toggle('active-tab', a.getAttribute('data-tab') === tab);
+    });
+
+    // Toggle views
+    document.getElementById('tab-home').classList.toggle('active', tab === 'home');
+    document.getElementById('tab-feed').classList.toggle('active', tab === 'feed');
+
+    // Update URL bar
+    var urlBar = document.querySelector('#browser-window .browser-url-bar');
+    if (tab === 'feed') urlBar.value = 'http://www.slopzone.com/feed';
+    else urlBar.value = 'http://www.slopzone.com/home';
+  }
+
+  document.querySelectorAll('#retro-nav a[data-tab]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      switchBrowserTab(link.getAttribute('data-tab'));
+    });
+  });
+
+  // Back arrow = Home, Forward arrow = Photo Feed
+  document.getElementById('browser-back').addEventListener('click', function() {
+    switchBrowserTab('home');
+  });
+  document.getElementById('browser-forward').addEventListener('click', function() {
+    switchBrowserTab('feed');
+  });
+
+  // ==================== LIKE BUTTONS ====================
+  document.querySelectorAll('.feed-like-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var count = parseInt(btn.getAttribute('data-likes'));
+      var isLiked = btn.classList.contains('liked');
+
+      if (isLiked) {
+        count--;
+        btn.classList.remove('liked');
+        btn.querySelector('.heart').innerHTML = '&#9825;';
+      } else {
+        count++;
+        btn.classList.add('liked');
+        btn.querySelector('.heart').innerHTML = '&#9829;';
+      }
+
+      btn.setAttribute('data-likes', count);
+      btn.querySelector('.like-count').textContent = count + ' likes';
+    });
+  });
+
+  // ==================== FOLLOW / SUBSCRIBE ====================
+  var pendingFollowBtn = null;
+  var followConfirm = document.getElementById('follow-confirm');
+
+  document.querySelectorAll('.feed-follow-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (btn.classList.contains('following')) {
+        btn.classList.remove('following');
+        btn.textContent = '+ Follow';
+        return;
+      }
+
+      pendingFollowBtn = btn;
+      var username = btn.getAttribute('data-user');
+      document.getElementById('follow-confirm-text').innerHTML =
+        'Are you sure you want to subscribe to <b>' + username + '</b>\'s updates? You will receive email notifications for new posts.';
+      followConfirm.classList.add('visible');
+    });
+  });
+
+  document.getElementById('follow-ok-btn').addEventListener('click', function() {
+    if (pendingFollowBtn) {
+      pendingFollowBtn.classList.add('following');
+      pendingFollowBtn.textContent = 'Following';
+    }
+    followConfirm.classList.remove('visible');
+    pendingFollowBtn = null;
+  });
+
+  document.getElementById('follow-cancel-btn').addEventListener('click', function() {
+    followConfirm.classList.remove('visible');
+    pendingFollowBtn = null;
+  });
+
+  document.getElementById('follow-confirm-bg').addEventListener('click', function() {
+    followConfirm.classList.remove('visible');
+    pendingFollowBtn = null;
+  });
+
+  // ==================== HIT COUNTER ANIMATION ====================
+  var hitCount = 4721;
+  setInterval(function() {
+    hitCount += Math.floor(Math.random() * 3);
+    document.getElementById('hit-counter').textContent = String(hitCount).padStart(6, '0').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+  }, 8000);
+
+  // ==================== CONTROL STRIP ====================
+  var activeCSPopup = null;
+
+  function closeAllCSPopups() {
+    document.querySelectorAll('.cs-popup, .cs-volume-popup').forEach(function(p) {
+      p.classList.remove('visible');
+    });
+    document.querySelectorAll('.cs-app-btn').forEach(function(b) {
+      b.classList.remove('active');
+    });
+    activeCSPopup = null;
+  }
+
+  // App button click - toggle popup
+  document.querySelectorAll('.cs-app-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var popup = btn.querySelector('.cs-popup, .cs-volume-popup');
+      if (!popup) return;
+
+      if (activeCSPopup === btn) {
+        closeAllCSPopups();
+        return;
+      }
+
+      closeAllCSPopups();
+      popup.classList.add('visible');
+      btn.classList.add('active');
+      activeCSPopup = btn;
+    });
+  });
+
+  // Close popups when clicking outside
+  document.addEventListener('mousedown', function(e) {
+    if (activeCSPopup && !e.target.closest('.cs-app-btn')) {
+      closeAllCSPopups();
+    }
+  });
+
+  // Popup item click - toggle checked state
+  document.querySelectorAll('.cs-popup-item:not(.disabled)').forEach(function(item) {
+    item.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var popup = item.closest('.cs-popup');
+      // If it's a radio-style group, uncheck siblings
+      popup.querySelectorAll('.cs-popup-item').forEach(function(si) {
+        si.classList.remove('checked', 'selected');
+      });
+      item.classList.add('checked');
+      closeAllCSPopups();
+    });
+  });
+
+  // Close button - collapse/expand
+  document.getElementById('cs-close').addEventListener('click', function() {
+    var strip = document.getElementById('control-strip');
+    strip.classList.toggle('collapsed');
+  });
+
+  // Volume slider drag
+  (function() {
+    var thumb = document.getElementById('cs-volume-thumb');
+    var dragging = false;
+    var track = thumb ? thumb.parentElement : null;
+
+    if (thumb && track) {
+      thumb.addEventListener('mousedown', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        dragging = true;
+      });
+
+      document.addEventListener('mousemove', function(e) {
+        if (!dragging) return;
+        var rect = track.getBoundingClientRect();
+        var y = e.clientY - rect.top;
+        var pct = Math.max(0, Math.min(1, y / rect.height));
+        thumb.style.top = (pct * 100) + '%';
+      });
+
+      document.addEventListener('mouseup', function() {
+        dragging = false;
+      });
+    }
+  })();
+
+  // ==================== VIRUS POPUP ====================
+  var virusOverlay = document.getElementById('virus-overlay');
+  var virusActive = false;
+  var virusPopups = [];
+  var virusTimers = [];
+  var virusCanvases = [];
+  var virusVideo = null;
+  var virusRAF = null;
+  var virusOffscreen = document.createElement('canvas');
+  var virusOffscreenCtx = virusOffscreen.getContext('2d');
+
+  var virusMessages = [
+    { icon: '\u26A0', title: 'WARNING', msg: 'Your system has been infected with W32.BlasterWorm!' },
+    { icon: '\u2620', title: 'CRITICAL ERROR', msg: 'A fatal exception 0E has occurred at 0028:C0034B03' },
+    { icon: '\u26A0', title: 'VIRUS ALERT', msg: 'Trojan.Horse.Win32 detected in System Folder!' },
+    { icon: '\u2622', title: 'DANGER', msg: 'Memory overflow in sector 0x4F21. Data corrupted.' },
+    { icon: '\u274C', title: 'SYSTEM FAILURE', msg: 'Hard drive formatting in progress... 23% complete' },
+    { icon: '\u26A0', title: 'ALERT', msg: 'Your files are being uploaded to an unknown server!' },
+    { icon: '\u2620', title: 'FATAL ERROR', msg: 'Cannot find HIMEM.SYS. Your RAM is gone.' },
+    { icon: '\u2622', title: 'MALWARE DETECTED', msg: 'ILOVEYOU.VBS is spreading through your contacts!' },
+    { icon: '\u26A0', title: 'SECURITY BREACH', msg: 'Hackers have gained access to your Macintosh HD!' },
+    { icon: '\u274C', title: 'ERROR 666', msg: 'The application "Finder" has unexpectedly quit. (again)' },
+    { icon: '\u2620', title: 'OH NO', msg: 'Your desktop icons are escaping. Please remain calm.' },
+    { icon: '\u26A0', title: 'HELP', msg: 'The trash can is full. It is VERY full. Too full.' },
+  ];
+
+  function drawStatic(canvas) {
+    var ctx = canvas.getContext('2d');
+    var w = canvas.width;
+    var h = canvas.height;
+    if (w === 0 || h === 0) return;
+    var imgData = ctx.createImageData(w, h);
+    var data = imgData.data;
+    for (var i = 0; i < data.length; i += 4) {
+      var v = Math.random() * 255;
+      data[i]     = v * (0.5 + Math.random() * 0.8);
+      data[i + 1] = v * Math.random() * 0.4;
+      data[i + 2] = v * Math.random() * 0.2;
+      data[i + 3] = 180;
+    }
+    ctx.putImageData(imgData, 0, 0);
+  }
+
+  // Animation loop: draws video frames (or static fallback) to each popup canvas
+  function updateVirusCanvases() {
+    if (!virusActive) return;
+
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var videoReady = virusVideo && virusVideo.readyState >= 2 && virusVideo.videoWidth > 0;
+
+    if (videoReady) {
+      var videoW = virusVideo.videoWidth;
+      var videoH = virusVideo.videoHeight;
+
+      // object-fit: cover calculation
+      var screenAspect = vw / vh;
+      var videoAspect = videoW / videoH;
+      var sx, sy, sw, sh;
+
+      if (videoAspect > screenAspect) {
+        sh = videoH;
+        sw = videoH * screenAspect;
+        sx = (videoW - sw) / 2;
+        sy = 0;
+      } else {
+        sw = videoW;
+        sh = videoW / screenAspect;
+        sx = 0;
+        sy = (videoH - sh) / 2;
+      }
+
+      // Draw video frame to offscreen canvas at screen resolution
+      if (virusOffscreen.width !== vw || virusOffscreen.height !== vh) {
+        virusOffscreen.width = vw;
+        virusOffscreen.height = vh;
+      }
+      virusOffscreenCtx.drawImage(virusVideo, sx, sy, sw, sh, 0, 0, vw, vh);
+    }
+
+    virusCanvases.forEach(function(canvas) {
+      if (!canvas.parentElement) return;
+      var rect = canvas.parentElement.getBoundingClientRect();
+      var cw = Math.max(1, Math.floor(rect.width));
+      var ch = Math.max(1, Math.floor(rect.height));
+      var ctx = canvas.getContext('2d');
+
+      if (canvas.width !== cw) canvas.width = cw;
+      if (canvas.height !== ch) canvas.height = ch;
+
+      if (videoReady) {
+        // Copy the portion of the video that corresponds to this popup's screen position
+        ctx.drawImage(virusOffscreen,
+          Math.floor(rect.left), Math.floor(rect.top), cw, ch,
+          0, 0, cw, ch);
+      } else {
+        // Fallback to static while video loads
+        drawStatic(canvas);
+      }
+    });
+
+    virusRAF = requestAnimationFrame(updateVirusCanvases);
+  }
+
+  // Preset layouts for each F key (percentages of viewport)
+  // Derived from Figma wireframes (1661x1245 frame)
+  var virusPresets = {
+    F1: [
+      { left: 15.3, top: 3.8, width: 30.8, height: 45.6 },
+      { left: 43.3, top: 10.0, width: 41.0, height: 44.4 },
+      { left: 46.7, top: 48.0, width: 30.3, height: 46.8 },
+      { left: 5.5, top: 27.9, width: 42.5, height: 68.8 }
+    ],
+    F2: [
+      { left: 4.5, top: 4.4, width: 42.2, height: 67.6 },
+      { left: 58.3, top: 3.6, width: 38.7, height: 44.4 },
+      { left: 43.7, top: 41.3, width: 30.3, height: 42.6 },
+      { left: 23.0, top: 48.0, width: 30.3, height: 46.8 }
+    ],
+    F3: [
+      { left: 7.9, top: 4.1, width: 30.3, height: 42.6 },
+      { left: 27.8, top: 16.3, width: 42.2, height: 67.6 },
+      { left: 63.0, top: 5.2, width: 30.3, height: 46.8 },
+      { left: 12.6, top: 52.9, width: 38.7, height: 44.4 }
+    ],
+    F4: [
+      { left: 11.3, top: 5.6, width: 44.9, height: 45.8 },
+      { left: 50.0, top: 8.3, width: 30.3, height: 46.8 },
+      { left: 6.2, top: 26.0, width: 42.2, height: 67.6 },
+      { left: 53.2, top: 39.8, width: 30.3, height: 42.6 }
+    ]
+  };
+
+  function spawnVirusPopup(config) {
+    var msg = virusMessages[Math.floor(Math.random() * virusMessages.length)];
+    var popup = document.createElement('div');
+    popup.className = 'virus-popup';
+
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var x = config.left / 100 * vw;
+    var y = config.top / 100 * vh;
+    var w = config.width / 100 * vw;
+    var h = config.height / 100 * vh;
+
+    popup.style.left = x + 'px';
+    popup.style.top = y + 'px';
+    popup.style.width = w + 'px';
+    popup.style.height = h + 'px';
+    popup.style.animation = 'virus-spawn 0.15s ease-out, virus-shake 0.08s infinite alternate 0.15s';
+
+    var canvas = document.createElement('canvas');
+    canvas.width = Math.floor(w);
+    canvas.height = Math.floor(h);
+    virusCanvases.push(canvas);
+
+    popup.innerHTML =
+      '<div class="virus-title">' +
+        '<div class="v-close">\u00D7</div>' +
+        '<span>' + msg.title + '</span>' +
+      '</div>' +
+      '<div class="virus-body">' +
+        '<div class="virus-bg"></div>' +
+        '<div class="virus-content">' +
+          '<div class="virus-icon">' + msg.icon + '</div>' +
+          '<div class="virus-msg">' + msg.msg + '</div>' +
+          '<div class="virus-btn">OK</div>' +
+        '</div>' +
+      '</div>';
+
+    popup.querySelector('.virus-bg').appendChild(canvas);
+
+    // Drag by title bar
+    var titleBar = popup.querySelector('.virus-title');
+    titleBar.style.cursor = 'var(--cursor-grab)';
+    titleBar.addEventListener('mousedown', function(e) {
+      if (e.target.classList.contains('v-close') || e.target.closest('.v-close')) return;
+      e.preventDefault();
+      var startX = e.clientX, startY = e.clientY;
+      var origLeft = parseFloat(popup.style.left);
+      var origTop = parseFloat(popup.style.top);
+      function onMove(ev) {
+        popup.style.left = (origLeft + ev.clientX - startX) + 'px';
+        popup.style.top = (origTop + ev.clientY - startY) + 'px';
+      }
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+
+    // X button closes this popup individually
+    popup.querySelector('.v-close').addEventListener('click', function(e) {
+      e.stopPropagation();
+      var idx = virusPopups.indexOf(popup);
+      if (idx !== -1) virusPopups.splice(idx, 1);
+      var c = popup.querySelector('canvas');
+      var ci = virusCanvases.indexOf(c);
+      if (ci !== -1) virusCanvases.splice(ci, 1);
+      popup.remove();
+      if (virusPopups.length === 0) stopVirusAttack();
+    });
+
+    virusOverlay.appendChild(popup);
+    virusPopups.push(popup);
+  }
+
+  function startVirusAttack(preset) {
+    if (virusActive) return;
+    virusActive = true;
+    virusOverlay.classList.add('active');
+
+    // Create and play video (hidden, used as canvas frame source)
+    virusVideo = document.createElement('video');
+    virusVideo.src = 'virus-video.mp4';
+    virusVideo.loop = true;
+    virusVideo.muted = true;
+    virusVideo.playsInline = true;
+    virusVideo.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;';
+    virusOverlay.appendChild(virusVideo);
+    virusVideo.play();
+
+    // Spawn 4 popups with preset positions
+    var layouts = virusPresets[preset] || virusPresets.F1;
+    for (var i = 0; i < layouts.length; i++) {
+      (function(cfg, delay) {
+        setTimeout(function() { spawnVirusPopup(cfg); }, delay);
+      })(layouts[i], i * 150);
+    }
+
+    // Start animation loop (renders video frames to popup canvases)
+    virusRAF = requestAnimationFrame(updateVirusCanvases);
+  }
+
+  function stopVirusAttack() {
+    virusActive = false;
+    virusOverlay.classList.remove('active');
+    virusOverlay.innerHTML = '';
+    virusPopups = [];
+    virusCanvases = [];
+    virusTimers.forEach(function(t) { clearInterval(t); });
+    virusTimers = [];
+    if (virusRAF) {
+      cancelAnimationFrame(virusRAF);
+      virusRAF = null;
+    }
+    if (virusVideo) {
+      virusVideo.pause();
+      virusVideo = null;
+    }
+  }
+
+  // F1-F4 triggers virus with preset layout, Escape dismisses
+  document.addEventListener('keydown', function(e) {
+    if (['F1','F2','F3','F4'].indexOf(e.key) !== -1) {
+      e.preventDefault();
+      stopVirusAttack();
+      startVirusAttack(e.key);
+    }
+    if (e.key === 'Escape' && virusActive) {
+      e.preventDefault();
+      stopVirusAttack();
+    }
+  });
+</script>
+</body>
+</html>
