@@ -1799,6 +1799,42 @@
 
   .follow-confirm-text b { color: #000066; }
 
+  #follow-congrats {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 99999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #follow-congrats.visible {
+    display: flex;
+  }
+
+  #follow-congrats-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.15);
+  }
+
+  #follow-congrats-box {
+    position: relative;
+    background: var(--gray-400);
+    border: 1px solid var(--black);
+    box-shadow:
+      inset 2px 2px 0 rgba(255,255,255,0.5),
+      inset -2px -2px 0 rgba(38,38,38,0.4),
+      4px 4px 12px rgba(0,0,0,0.4);
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #follow-congrats-text {
+    font-size: 14px;
+  }
+
   .follow-confirm-buttons {
     padding: 0 16px 12px;
     display: flex;
@@ -3153,6 +3189,34 @@
           </div>
         </div>
 
+        <!-- Follow Congrats Popup -->
+        <div id="follow-congrats">
+          <div id="follow-congrats-bg"></div>
+          <div id="follow-congrats-box">
+            <div class="title-bar" style="cursor:default;">
+              <div class="window-btn" style="visibility:hidden"></div>
+              <div class="title-bar-stripes"></div>
+              <div class="title-bar-center"><span>Congratulations!</span></div>
+              <div class="title-bar-stripes"></div>
+              <div class="window-btn" style="visibility:hidden"></div>
+            </div>
+            <div class="follow-confirm-body">
+              <div class="follow-confirm-icon">
+                <svg viewBox="0 0 32 32">
+                  <circle cx="16" cy="16" r="14" fill="#FFCC00" stroke="#996600" stroke-width="1.5"/>
+                  <text x="16" y="22" text-anchor="middle" font-size="18" font-weight="bold" fill="#996600">!</text>
+                </svg>
+              </div>
+              <div class="follow-confirm-text" id="follow-congrats-text">
+                Congrats!
+              </div>
+            </div>
+            <div class="follow-confirm-buttons">
+              <button class="os9-btn" id="follow-congrats-ok" style="font-weight:bold;">OK</button>
+            </div>
+          </div>
+        </div>
+
         <!-- Footer -->
         <div class="retro-footer">
           <div>&copy; 2001 SlopZone Inc. All rights reserved. | <a href="#" style="font-size:8px;">Terms of Service</a> | <a href="#" style="font-size:8px;">Privacy Policy</a> | <a href="#" style="font-size:8px;">Contact Webmaster</a></div>
@@ -3908,12 +3972,16 @@
     });
   });
 
+  var followCongrats = document.getElementById('follow-congrats');
+
   document.getElementById('follow-ok-btn').addEventListener('click', function() {
     if (pendingFollowBtn) {
       pendingFollowBtn.classList.add('following');
       pendingFollowBtn.textContent = 'Following';
     }
     followConfirm.classList.remove('visible');
+    document.getElementById('follow-congrats-text').innerHTML = 'Congrats! You\'re a subscriber to a shit for brains';
+    followCongrats.classList.add('visible');
     pendingFollowBtn = null;
   });
 
@@ -3925,6 +3993,14 @@
   document.getElementById('follow-confirm-bg').addEventListener('click', function() {
     followConfirm.classList.remove('visible');
     pendingFollowBtn = null;
+  });
+
+  document.getElementById('follow-congrats-ok').addEventListener('click', function() {
+    followCongrats.classList.remove('visible');
+  });
+
+  document.getElementById('follow-congrats-bg').addEventListener('click', function() {
+    followCongrats.classList.remove('visible');
   });
 
   // ==================== HIT COUNTER ANIMATION ====================
