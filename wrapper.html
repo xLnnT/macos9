@@ -88,8 +88,20 @@
 </head>
 <body>
   <div class="screen">
-    <iframe src="index.html" title="Mac OS 9"></iframe>
+    <iframe id="os9" src="index.html" title="Mac OS 9"></iframe>
     <div class="screen-glass"></div>
   </div>
+  <script>
+    document.getElementById('os9').addEventListener('load', function() {
+      var doc = this.contentDocument;
+      var bw = doc.getElementById('browser-window');
+      if (bw) {
+        bw.style.width = '90%';
+        bw.style.height = '85%';
+        bw.style.left = '5%';
+        bw.style.top = '24px';
+      }
+    });
+  </script>
 </body>
 </html>
