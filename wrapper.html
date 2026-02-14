@@ -11,52 +11,13 @@
     width: 100vw;
     height: 100vh;
     background: #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
   }
 
-  .crt {
-    --bezel: #c8c0b8;
-    --bezel-dark: #9e9690;
-    --bezel-light: #ddd6d0;
-    --bezel-edge: #706860;
-    position: relative;
-    background: var(--bezel);
-    border-radius: 28px;
-    padding: 40px 48px 56px;
-    box-shadow:
-      0 0 0 3px var(--bezel-edge),
-      0 8px 40px rgba(0, 0, 0, 0.7),
-      0 2px 80px rgba(0, 0, 0, 0.4);
-    /* Beveled plastic look */
-    background-image:
-      linear-gradient(
-        180deg,
-        var(--bezel-light) 0%,
-        var(--bezel) 8%,
-        var(--bezel) 85%,
-        var(--bezel-dark) 100%
-      );
-  }
-
-  /* Inner screen recess */
-  .screen-bezel {
-    background: #1a1a1a;
-    border-radius: 12px;
-    padding: 14px;
-    box-shadow:
-      inset 0 3px 12px rgba(0, 0, 0, 0.9),
-      inset 0 0 4px rgba(0, 0, 0, 0.7);
-  }
-
-  /* The CRT screen area */
   .screen {
     position: relative;
-    width: 1024px;
-    height: 768px;
-    border-radius: 8px;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     background: #000;
   }
@@ -68,14 +29,12 @@
     display: block;
   }
 
-  /* Glass bulge layer — sits on top to simulate curved glass */
+  /* Glass bulge layer */
   .screen-glass {
     position: absolute;
     inset: 0;
-    border-radius: 8px;
     pointer-events: none;
     z-index: 12;
-    /* Bright highlight to fake the convex glass reflection */
     background:
       radial-gradient(
         ellipse 60% 50% at 30% 25%,
@@ -94,7 +53,6 @@
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 8px;
     pointer-events: none;
     background:
       radial-gradient(
@@ -116,7 +74,6 @@
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 8px;
     pointer-events: none;
     background: repeating-linear-gradient(
       0deg,
@@ -127,65 +84,12 @@
     );
     z-index: 11;
   }
-
-  /* Brand label under the screen */
-  .crt-label {
-    text-align: center;
-    margin-top: 10px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 3px;
-    color: var(--bezel-edge);
-    text-transform: uppercase;
-  }
-
-  /* Power indicator */
-  .power-led {
-    position: absolute;
-    bottom: 22px;
-    right: 56px;
-    width: 8px;
-    height: 8px;
-    background: #4a2;
-    border-radius: 50%;
-    box-shadow:
-      0 0 4px #4a2,
-      0 0 10px rgba(68, 170, 34, 0.4);
-  }
-
-  /* Responsive scaling — fit any screen */
-  .crt {
-    transform-origin: center center;
-  }
 </style>
 </head>
 <body>
-  <div class="crt" id="crt">
-    <div class="screen-bezel">
-      <div class="screen">
-        <iframe src="index.html" title="Mac OS 9"></iframe>
-        <div class="screen-glass"></div>
-      </div>
-    </div>
-    <div class="crt-label">The Change Is Me</div>
-    <div class="power-led"></div>
+  <div class="screen">
+    <iframe src="index.html" title="Mac OS 9"></iframe>
+    <div class="screen-glass"></div>
   </div>
-
-  <script>
-    function scaleCRT() {
-      const crt = document.getElementById('crt');
-      // Reset scale to measure natural size
-      crt.style.transform = 'scale(1)';
-      const rect = crt.getBoundingClientRect();
-      const scaleX = window.innerWidth / rect.width;
-      const scaleY = window.innerHeight / rect.height;
-      const scale = Math.min(scaleX, scaleY) * 0.92; // 92% to add breathing room
-      crt.style.transform = `scale(${scale})`;
-    }
-
-    scaleCRT();
-    window.addEventListener('resize', scaleCRT);
-  </script>
 </body>
 </html>
