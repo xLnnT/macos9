@@ -88,7 +88,7 @@
 </head>
 <body>
   <div class="screen">
-    <iframe id="os9" src="index.html?v=0e1255e2" title="Mac OS 9"></iframe>
+    <iframe id="os9" src="index.html?v=408824c" title="Mac OS 9"></iframe>
     <div class="screen-glass"></div>
   </div>
   <script>
@@ -96,13 +96,25 @@
       var doc = this.contentDocument;
       var bw = doc.getElementById('browser-window');
       if (bw) {
+        var iframeH = document.getElementById('os9').clientHeight;
+        var winH = (iframeH - 48) + 'px';
         bw.style.width = '27.5%';
         bw.style.left = '5%';
         bw.style.top = '24px';
-        bw.style.height = 'calc(100vh - 48px)';
-        bw.style.maxHeight = 'calc(100vh - 48px)';
+        bw.style.height = winH;
+        bw.style.maxHeight = winH;
         bw.style.overflow = 'hidden';
       }
+
+      // Re-fit browser window on resize
+      window.addEventListener('resize', function() {
+        if (bw) {
+          var h = document.getElementById('os9').clientHeight;
+          var hPx = (h - 48) + 'px';
+          bw.style.height = hPx;
+          bw.style.maxHeight = hPx;
+        }
+      });
 
       // Hide finder window on load
       var fw = doc.getElementById('finder-window');
