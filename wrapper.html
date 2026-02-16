@@ -101,6 +101,61 @@
         bw.style.left = '5%';
         bw.style.top = '24px';
       }
+
+      // Replace marketplace listings (keep vase, replace the rest)
+      var listingsView = doc.getElementById('mkt-listings-view');
+      if (listingsView) {
+        var allListings = listingsView.querySelectorAll('.mkt-listing');
+        for (var i = 0; i < allListings.length; i++) {
+          if (allListings[i].id !== 'mkt-vase-listing') {
+            allListings[i].remove();
+          }
+        }
+
+        var products = [
+          { title: 'The Change Is Me Vinyl Preorder Exclusive', url: 'https://www.doodseskader.com/product-page/the-change-is-me-vinyl-preorder-exclusive', label: 'VINYL', bg: '#1a1a1a', color: '#c00', cat: 'Music > Vinyl', price: 'View Item' },
+          { title: 'No Laughter Left in Me Hoodie in Black', url: 'https://www.doodseskader.com/product-page/no-laughter-left-in-me-hoodie-in-black', label: 'HOOD', bg: '#1a1a1a', color: '#fff', cat: 'Apparel > Hoodies', price: 'View Item' },
+          { title: 'The Change Is Me Crewneck in Ice Blue', url: 'https://www.doodseskader.com/product-page/the-change-is-me-crewneck-in-ice-blue', label: 'CREW', bg: '#B0D4E8', color: '#1a1a1a', cat: 'Apparel > Crewnecks', price: 'View Item' },
+          { title: 'The Change Is Me Vinyl', url: 'https://www.doodseskader.com/product-page/the-change-is-me-vinyl', label: 'VINYL', bg: '#1a1a1a', color: '#c00', cat: 'Music > Vinyl', price: 'View Item' },
+          { title: 'Stuck in the Dark T-Shirt in Stone Washed Black', url: 'https://www.doodseskader.com/product-page/stuck-in-the-dark-t-shirt-in-stone-washed-black', label: 'TEE', bg: '#333', color: '#ccc', cat: 'Apparel > T-Shirts', price: 'View Item' },
+          { title: 'The Change Is Me T-Shirt in Off-White', url: 'https://www.doodseskader.com/product-page/the-change-is-me-t-shirt-in-off-white', label: 'TEE', bg: '#F5F0E8', color: '#1a1a1a', cat: 'Apparel > T-Shirts', price: 'View Item' },
+          { title: 'The Change Is Me CD', url: 'https://www.doodseskader.com/product-page/the-change-is-me-cd', label: 'CD', bg: '#1a1a1a', color: '#c00', cat: 'Music > CDs', price: 'View Item' },
+          { title: 'Doodseskader Embroidered Beanie', url: 'https://www.doodseskader.com/product-page/doodseskader-embroidered-beanie', label: 'BNE', bg: '#1a1a1a', color: '#fff', cat: 'Apparel > Accessories', price: 'View Item' },
+          { title: 'Doodseskader Embroidered Patch', url: 'https://www.doodseskader.com/product-page/doodseskader-embroidered-patch', label: 'PTCH', bg: '#1a1a1a', color: '#fff', cat: 'Apparel > Accessories', price: 'View Item' },
+          { title: 'Doodseskader Enamel Pin', url: 'https://www.doodseskader.com/product-page/doodseskader-enamel-pin', label: 'PIN', bg: '#1a1a1a', color: '#c00', cat: 'Apparel > Accessories', price: 'View Item' },
+          { title: 'Bend Until I\'d Break T-Shirt in Black', url: 'https://www.doodseskader.com/product-page/bend-until-i-d-break-t-shirt-in-black', label: 'TEE', bg: '#1a1a1a', color: '#fff', cat: 'Apparel > T-Shirts', price: 'View Item' }
+        ];
+
+        var bottomBar = listingsView.querySelector('.mkt-bottom-bar');
+        for (var i = 0; i < products.length; i++) {
+          var p = products[i];
+          var div = doc.createElement('div');
+          div.className = 'mkt-listing';
+          div.innerHTML = '<table cellpadding="0" cellspacing="0" border="0"><tr>' +
+            '<td class="mkt-listing-img"><div style="width:48px;height:48px;background:' + p.bg + ';border:1px solid #999;text-align:center;line-height:48px;font-size:10px;color:' + p.color + ';font-weight:bold">' + p.label + '</div></td>' +
+            '<td class="mkt-listing-info"><div class="mkt-listing-title"><a href="' + p.url + '" target="_blank">' + p.title + '</a></div>' +
+            '<div class="mkt-listing-meta">' + p.cat + '</div>' +
+            '<div class="mkt-seller">Seller: <a href="https://www.doodseskader.com" target="_blank">Doodseskader</a> <span class="mkt-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div></td>' +
+            '<td class="mkt-listing-price"><div style="margin-top:3px"><a href="' + p.url + '" target="_blank" style="font-family:Verdana,sans-serif;font-size:8px;background:#006;color:#fff;padding:2px 8px;text-decoration:none;font-weight:bold">View Item</a></div></td>' +
+            '</tr></table>';
+          if (bottomBar) {
+            listingsView.insertBefore(div, bottomBar);
+          } else {
+            listingsView.appendChild(div);
+          }
+        }
+
+        // Update item count
+        var countSpan = listingsView.querySelector('span[style]');
+        if (countSpan && countSpan.textContent.indexOf('showing') !== -1) {
+          countSpan.textContent = '(showing 1-12 of 12)';
+        }
+
+        // Update bottom bar
+        if (bottomBar) {
+          bottomBar.innerHTML = 'Page: <b>1</b>';
+        }
+      }
     });
   </script>
 </body>
