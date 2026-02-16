@@ -108,25 +108,43 @@
         fw.classList.add('hidden');
       }
 
-      // Add "Return to Main Site" folder icon
+      // Add "Return to Main Site" icon
       var desktop = doc.getElementById('desktop') || doc.querySelector('.desktop');
       if (!desktop) desktop = doc.body;
-      var folderIcon = doc.createElement('div');
-      folderIcon.className = 'desktop-icon';
-      folderIcon.style.cssText = 'position:absolute;left:20px;top:40px;cursor:pointer;z-index:5;';
-      folderIcon.innerHTML =
+      var returnIcon = doc.createElement('div');
+      returnIcon.className = 'desktop-icon';
+      returnIcon.style.cssText = 'position:absolute;left:20px;top:40px;z-index:5;';
+      returnIcon.innerHTML =
         '<div class="icon-img">' +
-          '<svg viewBox="0 0 40 32" class="svg-folder" style="width:40px;height:32px">' +
-            '<path d="M2 6 L16 6 L18 2 L2 2 Z" fill="#8888DD" stroke="#555" stroke-width="0.5"/>' +
-            '<rect x="2" y="6" width="36" height="24" rx="2" fill="#9999EE" stroke="#555" stroke-width="0.5"/>' +
-            '<rect x="4" y="8" width="32" height="20" rx="1" fill="#AAAAFF"/>' +
+          '<svg viewBox="0 0 48 48" style="width:48px;height:48px">' +
+            '<circle cx="24" cy="24" r="20" fill="#4488DD" stroke="#333" stroke-width="1"/>' +
+            '<circle cx="24" cy="24" r="20" fill="none" stroke="#333" stroke-width="1"/>' +
+            '<ellipse cx="24" cy="24" rx="10" ry="20" fill="none" stroke="#2266AA" stroke-width="0.8"/>' +
+            '<line x1="4" y1="24" x2="44" y2="24" stroke="#2266AA" stroke-width="0.8"/>' +
+            '<ellipse cx="24" cy="16" rx="17" ry="4" fill="none" stroke="#2266AA" stroke-width="0.6"/>' +
+            '<ellipse cx="24" cy="32" rx="17" ry="4" fill="none" stroke="#2266AA" stroke-width="0.6"/>' +
+            '<path d="M8 10 L16 8 L18 14 L10 16 Z" fill="#4CAF50" opacity="0.7"/>' +
+            '<path d="M28 6 L38 8 L36 14 L30 12 Z" fill="#4CAF50" opacity="0.6"/>' +
+            '<path d="M6 28 L14 26 L16 34 L8 36 Z" fill="#4CAF50" opacity="0.5"/>' +
+            '<path d="M30 30 L40 28 L42 34 L32 36 Z" fill="#4CAF50" opacity="0.5"/>' +
+            '<path d="M14 24 L24 16 L24 20 L34 20 L34 28 L24 28 L24 32 Z" fill="#FFF" stroke="#333" stroke-width="0.8" opacity="0.9"/>' +
           '</svg>' +
         '</div>' +
-        '<span class="icon-label" style="display:block;text-align:center;font-family:Geneva,Verdana,sans-serif;font-size:9px;color:#FFF;margin-top:2px;text-shadow:1px 1px 0 #000;">Return to Main Site</span>';
-      folderIcon.addEventListener('dblclick', function() {
+        '<span class="icon-label">Return to Main Site</span>';
+      returnIcon.addEventListener('mousedown', function(e) {
+        e.stopPropagation();
+        var clearFn = doc.defaultView.clearSelections || function() {
+          doc.querySelectorAll('.desktop-icon, .folder-icon').forEach(function(el) {
+            el.classList.remove('selected');
+          });
+        };
+        clearFn();
+        returnIcon.classList.add('selected');
+      });
+      returnIcon.addEventListener('dblclick', function() {
         window.top.location.href = 'https://www.doodseskader.com/';
       });
-      desktop.appendChild(folderIcon);
+      desktop.appendChild(returnIcon);
 
       // Replace marketplace listings (keep vase, replace the rest)
       var listingsView = doc.getElementById('mkt-listings-view');
