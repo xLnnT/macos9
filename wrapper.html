@@ -88,7 +88,7 @@
 </head>
 <body>
   <div class="screen">
-    <iframe id="os9" src="index.html?v=9c4009a" title="Mac OS 9"></iframe>
+    <iframe id="os9" src="index.html?v=0e1255e2" title="Mac OS 9"></iframe>
     <div class="screen-glass"></div>
   </div>
   <script>
@@ -97,9 +97,11 @@
       var bw = doc.getElementById('browser-window');
       if (bw) {
         bw.style.width = '27.5%';
-        bw.style.height = '85%';
         bw.style.left = '5%';
         bw.style.top = '24px';
+        bw.style.height = 'calc(100vh - 48px)';
+        bw.style.maxHeight = 'calc(100vh - 48px)';
+        bw.style.overflow = 'hidden';
       }
 
       // Hide finder window on load
