@@ -2105,13 +2105,6 @@ $('cs-close').onclick=function(){
   };
 })();
 
-// ===== WALLPAPER SCROLL ANIMATION =====
-var wpOffset=0;
-setInterval(function(){
-  wpOffset=(wpOffset+14)%1440;
-  desktop.style.backgroundPosition='0 '+wpOffset+'px';
-},200);
-
 // ===== BLINK TEXT ANIMATION =====
 var blinkEls=[];
 for(var i=0;i<allSpans.length;i++){
