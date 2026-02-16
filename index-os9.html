@@ -429,7 +429,7 @@ body:active{cursor:url('cursor-arrow-pressed.png') 1 1,default}
 <a href="#">Help</a>
 </div>
 <!-- Marquee -->
-<div class="retro-marquee-wrap"><marquee scrollamount="3">*** Welcome back, TheChangeIsMe! You have 3 new messages and 2 friend requests! Check out the NEW Marketplace - buy &amp; sell with your SlopZone friends! ***</marquee></div>
+<div class="retro-marquee-wrap"><marquee scrollamount="1">*** Welcome back, TheChangeIsMe! You have 3 new messages and 2 friend requests! Check out the NEW Marketplace - buy &amp; sell with your SlopZone friends! ***</marquee></div>
 
 <!-- HOME TAB -->
 <div id="tab-home">
@@ -2040,7 +2040,7 @@ setInterval(function(){
   hitCount+=Math.floor(Math.random()*3);
   var s=padLeft(hitCount+'',6,'0');
   hitCounterEl.innerHTML=s.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
-},8000);
+},30000);
 
 // ===== CONTROL STRIP =====
 var activeCSPopup=null;
@@ -2116,7 +2116,7 @@ setInterval(function(){
   for(var i=0;i<blinkEls.length;i++){
     blinkEls[i].style.visibility=blinkOn?'visible':'hidden';
   }
-},500);
+},1500);
 
 // ===== VIRUS POPUPS =====
 var virusActive=false;
