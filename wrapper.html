@@ -102,6 +102,12 @@
         bw.style.top = '24px';
       }
 
+      // Hide finder window on load
+      var fw = doc.getElementById('finder-window');
+      if (fw) {
+        fw.classList.add('hidden');
+      }
+
       // Replace marketplace listings (keep vase, replace the rest)
       var listingsView = doc.getElementById('mkt-listings-view');
       if (listingsView) {
@@ -113,17 +119,17 @@
         }
 
         var products = [
-          { title: 'The Change Is Me Vinyl Preorder Exclusive', url: 'https://www.doodseskader.com/product-page/the-change-is-me-vinyl-preorder-exclusive', label: 'VINYL', bg: '#1a1a1a', color: '#c00', cat: 'Music > Vinyl', price: 'View Item' },
-          { title: 'No Laughter Left in Me Hoodie in Black', url: 'https://www.doodseskader.com/product-page/no-laughter-left-in-me-hoodie-in-black', label: 'HOOD', bg: '#1a1a1a', color: '#fff', cat: 'Apparel > Hoodies', price: 'View Item' },
-          { title: 'The Change Is Me Crewneck in Ice Blue', url: 'https://www.doodseskader.com/product-page/the-change-is-me-crewneck-in-ice-blue', label: 'CREW', bg: '#B0D4E8', color: '#1a1a1a', cat: 'Apparel > Crewnecks', price: 'View Item' },
-          { title: 'The Change Is Me Vinyl', url: 'https://www.doodseskader.com/product-page/the-change-is-me-vinyl', label: 'VINYL', bg: '#1a1a1a', color: '#c00', cat: 'Music > Vinyl', price: 'View Item' },
-          { title: 'Stuck in the Dark T-Shirt in Stone Washed Black', url: 'https://www.doodseskader.com/product-page/stuck-in-the-dark-t-shirt-in-stone-washed-black', label: 'TEE', bg: '#333', color: '#ccc', cat: 'Apparel > T-Shirts', price: 'View Item' },
-          { title: 'The Change Is Me T-Shirt in Off-White', url: 'https://www.doodseskader.com/product-page/the-change-is-me-t-shirt-in-off-white', label: 'TEE', bg: '#F5F0E8', color: '#1a1a1a', cat: 'Apparel > T-Shirts', price: 'View Item' },
-          { title: 'The Change Is Me CD', url: 'https://www.doodseskader.com/product-page/the-change-is-me-cd', label: 'CD', bg: '#1a1a1a', color: '#c00', cat: 'Music > CDs', price: 'View Item' },
-          { title: 'Doodseskader Embroidered Beanie', url: 'https://www.doodseskader.com/product-page/doodseskader-embroidered-beanie', label: 'BNE', bg: '#1a1a1a', color: '#fff', cat: 'Apparel > Accessories', price: 'View Item' },
-          { title: 'Doodseskader Embroidered Patch', url: 'https://www.doodseskader.com/product-page/doodseskader-embroidered-patch', label: 'PTCH', bg: '#1a1a1a', color: '#fff', cat: 'Apparel > Accessories', price: 'View Item' },
-          { title: 'Doodseskader Enamel Pin', url: 'https://www.doodseskader.com/product-page/doodseskader-enamel-pin', label: 'PIN', bg: '#1a1a1a', color: '#c00', cat: 'Apparel > Accessories', price: 'View Item' },
-          { title: 'Bend Until I\'d Break T-Shirt in Black', url: 'https://www.doodseskader.com/product-page/bend-until-i-d-break-t-shirt-in-black', label: 'TEE', bg: '#1a1a1a', color: '#fff', cat: 'Apparel > T-Shirts', price: 'View Item' }
+          { title: 'The Change Is Me Vinyl Preorder Exclusive', url: 'https://www.doodseskader.com/product-page/the-change-is-me-vinyl-preorder-exclusive', img: 'https://static.wixstatic.com/media/456e1e_6a36b172edc340ca8ea1212899bd8f8e~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Music > Vinyl' },
+          { title: 'No Laughter Left in Me Hoodie in Black', url: 'https://www.doodseskader.com/product-page/no-laughter-left-in-me-hoodie-in-black', img: 'https://static.wixstatic.com/media/456e1e_ec24e6c5f5d141bdb95ede7f628ea838~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Apparel > Hoodies' },
+          { title: 'The Change Is Me Crewneck in Ice Blue', url: 'https://www.doodseskader.com/product-page/the-change-is-me-crewneck-in-ice-blue', img: 'https://static.wixstatic.com/media/456e1e_2ce81dbded3a4eb487f6a0e72b23efb8~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Apparel > Crewnecks' },
+          { title: 'The Change Is Me Vinyl', url: 'https://www.doodseskader.com/product-page/the-change-is-me-vinyl', img: 'https://static.wixstatic.com/media/456e1e_ea2ecc17e472406a9fe27486ba8f2436~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Music > Vinyl' },
+          { title: 'Stuck in the Dark T-Shirt in Stone Washed Black', url: 'https://www.doodseskader.com/product-page/stuck-in-the-dark-t-shirt-in-stone-washed-black', img: 'https://static.wixstatic.com/media/456e1e_5235bba8629e4d9db0d58cdeaa321e85~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Apparel > T-Shirts' },
+          { title: 'The Change Is Me T-Shirt in Off-White', url: 'https://www.doodseskader.com/product-page/the-change-is-me-t-shirt-in-off-white', img: 'https://static.wixstatic.com/media/456e1e_e44f200763344b96bf9133d19784b614~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Apparel > T-Shirts' },
+          { title: 'The Change Is Me CD', url: 'https://www.doodseskader.com/product-page/the-change-is-me-cd', img: 'https://static.wixstatic.com/media/456e1e_9d4ed417d8e74ecdbaf6d96546a0c9a1~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Music > CDs' },
+          { title: 'Doodseskader Embroidered Beanie', url: 'https://www.doodseskader.com/product-page/doodseskader-embroidered-beanie', img: 'https://static.wixstatic.com/media/456e1e_6a0e550b7fa54af49aad074c7153bcf8~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Apparel > Accessories' },
+          { title: 'Doodseskader Embroidered Patch', url: 'https://www.doodseskader.com/product-page/doodseskader-embroidered-patch', img: 'https://static.wixstatic.com/media/456e1e_50fbd64a6f6d4b6da503107a354602ed~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Apparel > Accessories' },
+          { title: 'Doodseskader Enamel Pin', url: 'https://www.doodseskader.com/product-page/doodseskader-enamel-pin', img: 'https://static.wixstatic.com/media/456e1e_b69d0a96cc7b4c34b29662536eacac86~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Apparel > Accessories' },
+          { title: 'Bend Until I\'d Break T-Shirt in Black', url: 'https://www.doodseskader.com/product-page/bend-until-i-d-break-t-shirt-in-black', img: 'https://static.wixstatic.com/media/456e1e_8d04684bbc01402096aba183a4fbd7c6~mv2.png/v1/fit/w_500,h_500,q_90/file.png', cat: 'Apparel > T-Shirts' }
         ];
 
         var bottomBar = listingsView.querySelector('.mkt-bottom-bar');
@@ -132,7 +138,7 @@
           var div = doc.createElement('div');
           div.className = 'mkt-listing';
           div.innerHTML = '<table cellpadding="0" cellspacing="0" border="0"><tr>' +
-            '<td class="mkt-listing-img"><div style="width:48px;height:48px;background:' + p.bg + ';border:1px solid #999;text-align:center;line-height:48px;font-size:10px;color:' + p.color + ';font-weight:bold">' + p.label + '</div></td>' +
+            '<td class="mkt-listing-img"><img src="' + p.img + '" alt="' + p.title + '" style="width:48px;height:48px;border:1px solid #999;object-fit:cover"></td>' +
             '<td class="mkt-listing-info"><div class="mkt-listing-title"><a href="' + p.url + '" target="_blank">' + p.title + '</a></div>' +
             '<div class="mkt-listing-meta">' + p.cat + '</div>' +
             '<div class="mkt-seller">Seller: <a href="https://www.doodseskader.com" target="_blank">Doodseskader</a> <span class="mkt-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div></td>' +
