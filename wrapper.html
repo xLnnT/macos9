@@ -183,12 +183,14 @@
           congratsPopup.style.display = 'none';
         });
       }
-      // Watch for browser window becoming visible
+      // Watch for browser window becoming visible, then show popup after 5s
       var checkBrowserOpen = setInterval(function() {
         if (bw && bw.offsetParent !== null && !bw.classList.contains('hidden') && bw.style.display !== 'none' && !congratsShown) {
           congratsShown = true;
-          congratsPopup.style.display = 'block';
           clearInterval(checkBrowserOpen);
+          setTimeout(function() {
+            congratsPopup.style.display = 'block';
+          }, 5000);
         }
       }, 300);
 
