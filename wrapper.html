@@ -88,7 +88,7 @@
 </head>
 <body>
   <div class="screen">
-    <iframe id="os9" src="index.html?v=408824c" title="Mac OS 9"></iframe>
+    <iframe id="os9" src="https://rawcdn.githack.com/xLnnT/macos9/3167640/index.html" title="Mac OS 9"></iframe>
     <div class="screen-glass"></div>
   </div>
   <script>
@@ -160,6 +160,38 @@
       });
       desktop.appendChild(returnIcon);
 
+      // Add "Congrats" visitor popup when browser window opens
+      var congratsShown = false;
+      var congratsPopup = doc.createElement('div');
+      congratsPopup.id = 'visitor-congrats';
+      congratsPopup.style.cssText = 'display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:#c0c0c0;border:2px outset #fff;padding:0;font-family:\"Chicago\",\"Geneva\",Verdana,sans-serif;font-size:12px;min-width:340px;box-shadow:2px 2px 0 #000;';
+      congratsPopup.innerHTML =
+        '<div style="background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font-weight:bold;font-size:11px;padding:3px 6px;display:flex;justify-content:space-between;align-items:center;">' +
+          '<span>SlopZone Alert</span>' +
+        '</div>' +
+        '<div style="padding:16px 20px;text-align:center;">' +
+          '<div style="margin-bottom:12px;font-size:12px;line-height:1.5;">' +
+            '<b>Congrats!</b> You\'re the 4,500th visitor to our site!<br>You\'ve won: ' +
+            '<a href="https://newsdigital.ffm.to/celebrityculture" target="_blank" style="color:#0000EE;text-decoration:underline;font-weight:bold;">link</a>' +
+          '</div>' +
+          '<button id="congrats-ok-btn" style="font-family:inherit;font-size:11px;padding:4px 24px;background:#c0c0c0;border:2px outset #fff;cursor:pointer;font-weight:bold;">OK</button>' +
+        '</div>';
+      doc.body.appendChild(congratsPopup);
+      var congratsOkBtn = doc.getElementById('congrats-ok-btn');
+      if (congratsOkBtn) {
+        congratsOkBtn.addEventListener('click', function() {
+          congratsPopup.style.display = 'none';
+        });
+      }
+      // Watch for browser window becoming visible
+      var checkBrowserOpen = setInterval(function() {
+        if (bw && bw.offsetParent !== null && !bw.classList.contains('hidden') && bw.style.display !== 'none' && !congratsShown) {
+          congratsShown = true;
+          congratsPopup.style.display = 'block';
+          clearInterval(checkBrowserOpen);
+        }
+      }, 300);
+
       // Replace marketplace listings (keep vase, replace the rest)
       var listingsView = doc.getElementById('mkt-listings-view');
       if (listingsView) {
@@ -170,18 +202,19 @@
           }
         }
 
+        var cdnBase = 'https://rawcdn.githack.com/xLnnT/macos9/3167640/';
         var products = [
-          { title: 'The Change Is Me Vinyl Preorder Exclusive', url: 'https://www.doodseskader.com/product-page/the-change-is-me-vinyl-preorder-exclusive', img: 'prod_vinyl_preorder.png', cat: 'Music > Vinyl' },
-          { title: 'No Laughter Left in Me Hoodie in Black', url: 'https://www.doodseskader.com/product-page/no-laughter-left-in-me-hoodie-in-black', img: 'prod_hoodie_black.png', cat: 'Apparel > Hoodies' },
-          { title: 'The Change Is Me Crewneck in Ice Blue', url: 'https://www.doodseskader.com/product-page/the-change-is-me-crewneck-in-ice-blue', img: 'prod_crewneck_blue.png', cat: 'Apparel > Crewnecks' },
-          { title: 'The Change Is Me Vinyl', url: 'https://www.doodseskader.com/product-page/the-change-is-me-vinyl', img: 'prod_vinyl.png', cat: 'Music > Vinyl' },
-          { title: 'Stuck in the Dark T-Shirt in Stone Washed Black', url: 'https://www.doodseskader.com/product-page/stuck-in-the-dark-t-shirt-in-stone-washed-black', img: 'prod_tee_stonewash.png', cat: 'Apparel > T-Shirts' },
-          { title: 'The Change Is Me T-Shirt in Off-White', url: 'https://www.doodseskader.com/product-page/the-change-is-me-t-shirt-in-off-white', img: 'prod_tee_offwhite.png', cat: 'Apparel > T-Shirts' },
-          { title: 'The Change Is Me CD', url: 'https://www.doodseskader.com/product-page/the-change-is-me-cd', img: 'prod_cd.png', cat: 'Music > CDs' },
-          { title: 'Doodseskader Embroidered Beanie', url: 'https://www.doodseskader.com/product-page/doodseskader-embroidered-beanie', img: 'prod_beanie.png', cat: 'Apparel > Accessories' },
-          { title: 'Doodseskader Embroidered Patch', url: 'https://www.doodseskader.com/product-page/doodseskader-embroidered-patch', img: 'prod_patch.png', cat: 'Apparel > Accessories' },
-          { title: 'Doodseskader Enamel Pin', url: 'https://www.doodseskader.com/product-page/doodseskader-enamel-pin', img: 'prod_pin.png', cat: 'Apparel > Accessories' },
-          { title: 'Bend Until I\'d Break T-Shirt in Black', url: 'https://www.doodseskader.com/product-page/bend-until-i-d-break-t-shirt-in-black', img: 'prod_tee_black.png', cat: 'Apparel > T-Shirts' }
+          { title: 'The Change Is Me Vinyl Preorder Exclusive', url: 'https://www.doodseskader.com/product-page/the-change-is-me-vinyl-preorder-exclusive', img: cdnBase + 'prod_vinyl_preorder.png', cat: 'Music > Vinyl' },
+          { title: 'No Laughter Left in Me Hoodie in Black', url: 'https://www.doodseskader.com/product-page/no-laughter-left-in-me-hoodie-in-black', img: cdnBase + 'prod_hoodie_black.png', cat: 'Apparel > Hoodies' },
+          { title: 'The Change Is Me Crewneck in Ice Blue', url: 'https://www.doodseskader.com/product-page/the-change-is-me-crewneck-in-ice-blue', img: cdnBase + 'prod_crewneck_blue.png', cat: 'Apparel > Crewnecks' },
+          { title: 'The Change Is Me Vinyl', url: 'https://www.doodseskader.com/product-page/the-change-is-me-vinyl', img: cdnBase + 'prod_vinyl.png', cat: 'Music > Vinyl' },
+          { title: 'Stuck in the Dark T-Shirt in Stone Washed Black', url: 'https://www.doodseskader.com/product-page/stuck-in-the-dark-t-shirt-in-stone-washed-black', img: cdnBase + 'prod_tee_stonewash.png', cat: 'Apparel > T-Shirts' },
+          { title: 'The Change Is Me T-Shirt in Off-White', url: 'https://www.doodseskader.com/product-page/the-change-is-me-t-shirt-in-off-white', img: cdnBase + 'prod_tee_offwhite.png', cat: 'Apparel > T-Shirts' },
+          { title: 'The Change Is Me CD', url: 'https://www.doodseskader.com/product-page/the-change-is-me-cd', img: cdnBase + 'prod_cd.png', cat: 'Music > CDs' },
+          { title: 'Doodseskader Embroidered Beanie', url: 'https://www.doodseskader.com/product-page/doodseskader-embroidered-beanie', img: cdnBase + 'prod_beanie.png', cat: 'Apparel > Accessories' },
+          { title: 'Doodseskader Embroidered Patch', url: 'https://www.doodseskader.com/product-page/doodseskader-embroidered-patch', img: cdnBase + 'prod_patch.png', cat: 'Apparel > Accessories' },
+          { title: 'Doodseskader Enamel Pin', url: 'https://www.doodseskader.com/product-page/doodseskader-enamel-pin', img: cdnBase + 'prod_pin.png', cat: 'Apparel > Accessories' },
+          { title: 'Bend Until I\'d Break T-Shirt in Black', url: 'https://www.doodseskader.com/product-page/bend-until-i-d-break-t-shirt-in-black', img: cdnBase + 'prod_tee_black.png', cat: 'Apparel > T-Shirts' }
         ];
 
         var bottomBar = listingsView.querySelector('.mkt-bottom-bar');
